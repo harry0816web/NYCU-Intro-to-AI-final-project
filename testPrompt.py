@@ -13,7 +13,7 @@ def chat_with_llm():
     print("-" * 50)
 
     client = genai.Client(
-        api_key='AIzaSyDzoRzgoxl0elfXl2bmC4gm92MMnSve7YE',
+        api_key='gemini-api-key',
     )
 
     model = "gemini-2.0-flash"
