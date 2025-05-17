@@ -1,10 +1,195 @@
 # To run this code you need to install the following dependencies:
 # pip install google-genai
 
-import base64
 import os
+import csv
+import json
+import re
+from datetime import datetime
 from google import genai
 from google.genai import types
+
+PREF_FILE = "preferences.json"
+USER_PREF_FILE = "user_preferences.json"  # 新增用戶偏好檔案
+
+# 轉移成函數，只有在檔案存在時才執行
+def init_preference_file():
+    # 如果檔案不存在，就跳過格式調整
+    if not os.path.exists(PREF_FILE):
+        print("preferences.json 不存在，跳過格式調整")
+        return
+        
+    try:
+        # 讀取現有的 preferences.json
+        with open(PREF_FILE, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+
+        # 只添加 user_id，不删除任何字段
+        for entry in data.get('recipe_history', []):
+            # 如果没有 user_id，添加默认值
+            if 'user_id' not in entry:
+                entry['user_id'] = 'default'
+            
+        # 保留 JSON 的原始结构，不删除任何字段
+        with open(PREF_FILE, 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+        
+        print("已完成 preferences.json 格式調整 (保留所有字段)")
+    except Exception as e:
+        print(f"初始化偏好文件時發生錯誤: {str(e)}")
+        # 出錯時可以創建一個空的preferences.json
+        with open(PREF_FILE, 'w', encoding='utf-8') as f:
+            json.dump({'recipe_history': []}, f, indent=2, ensure_ascii=False)
+            
+# 讀取用戶偏好
+def load_user_preferences(user_id="default"):
+    if os.path.exists(USER_PREF_FILE):
+        with open(USER_PREF_FILE, 'r', encoding='utf-8') as f:
+            try:
+                data = json.load(f)
+                if isinstance(data, dict):
+                    # 返回該用戶的偏好，如果不存在就返回默認值
+                    return data.get(user_id, {
+                        "user_id": user_id,
+                        "flavor_preference": "無",
+                        "recipe_type_preference": "無",
+                        "avoid_ingredients": "無",
+                        "cooking_constraints": "無",
+                        "dietary_restrictions": "無"
+                    })
+            except (ValueError, json.JSONDecodeError):
+                pass
+    return {
+        "user_id": user_id,
+        "flavor_preference": "無",
+        "recipe_type_preference": "無",
+        "avoid_ingredients": "無",
+        "cooking_constraints": "無",
+        "dietary_restrictions": "無"
+    }
+
+# 儲存用戶偏好
+def save_user_preferences(preferences, user_id="default"):
+    # 初始化或讀取現有用戶偏好檔案
+    if os.path.exists(USER_PREF_FILE):
+        with open(USER_PREF_FILE, 'r', encoding='utf-8') as f:
+            try:
+                data = json.load(f)
+                if not isinstance(data, dict):
+                    data = {}
+            except (ValueError, json.JSONDecodeError):
+                data = {}
+    else:
+        data = {}
+    
+    # 添加或更新該用戶的偏好
+    data[user_id] = preferences
+    
+    # 寫入檔案
+    with open(USER_PREF_FILE, 'w', encoding='utf-8') as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+
+def store_preference_json(ingredients, recipe_text, preferences=None):
+    # 初始化偏好欄位
+    if preferences is None:
+        preferences = {
+            "flavor_preference": "無",
+            "recipe_type_preference": "無",
+            "avoid_ingredients": "無",
+            "cooking_constraints": "無",
+            "dietary_restrictions": "無"
+        }
+    
+    # 初始化或讀取 JSON
+    if os.path.exists(PREF_FILE):
+        with open(PREF_FILE, 'r', encoding='utf-8') as f:
+            try:
+                data = json.load(f)
+                if not isinstance(data, dict):
+                    raise ValueError("格式錯誤")
+            except (ValueError, json.JSONDecodeError):
+                data = {}
+    else:
+        data = {}
+
+    # 確保 recipe_history 欄位存在
+    data.setdefault("recipe_history", [])
+
+    # 擷取 recipe_text 中的食材表格
+    lines = recipe_text.strip().splitlines()
+    table_lines = [line for line in lines if "|" in line and "---" not in line]
+    extracted_ingredients = []
+    extracted_quantity = []
+
+    for line in table_lines[1:]:  # 跳過表頭
+        parts = [cell.strip() for cell in line.strip().split('|') if cell.strip()]
+        if len(parts) >= 2:
+            extracted_ingredients.append(parts[0])
+            extracted_quantity.append(parts[1])
+
+    # 清理使用者輸入食材
+    clean_ingredients = [
+        ing for ing in ingredients
+        if ing.strip() not in {"無", "沒有", "無 請直接提供給我料理", "沒有 請推薦給我"}
+    ]
+
+    # 創建記錄
+    recipe_entry = {
+        "timestamp": datetime.now().isoformat(),
+        "input": clean_ingredients,
+        "recipe_ingredients": extracted_ingredients,
+        "recipe_quantity": extracted_quantity,
+        "flavor_preference": preferences.get("flavor_preference", "無"),
+        "recipe_type_preference": preferences.get("recipe_type_preference", "無"),
+        "avoid_ingredients": preferences.get("avoid_ingredients", "無"),
+        "cooking_constraints": preferences.get("cooking_constraints", "無"),
+        "dietary_restrictions": preferences.get("dietary_restrictions", "無"),
+        "recipe": recipe_text
+    }
+
+    # 更新 JSON 統計數據
+    data["recipe_history"].append(recipe_entry)
+    
+    # 維護偏好食材總結
+    data["preferred_ingredients"] = sorted(set(
+        ingredient for entry in data["recipe_history"] 
+        for ingredient in entry.get("input", [])
+        if ingredient and ingredient not in {"無", "沒有"}
+    ))
+    
+    # 維護常用食材總結
+    all_ingredients = []
+    all_quantities = []
+    for entry in data["recipe_history"]:
+        for i, ingredient in enumerate(entry.get("recipe_ingredients", [])):
+            if i < len(entry.get("recipe_quantity", [])):
+                all_ingredients.append(ingredient)
+                all_quantities.append(entry["recipe_quantity"][i])
+    
+    # 合併相同食材
+    unique_ingredients = {}
+    for i, ingredient in enumerate(all_ingredients):
+        if ingredient not in unique_ingredients:
+            unique_ingredients[ingredient] = all_quantities[i]
+    
+    data["preferred_recipe_ingredients"] = list(unique_ingredients.keys())
+    data["preferred_recipe_quantity"] = list(unique_ingredients.values())
+
+    # 寫入檔案
+    with open(PREF_FILE, 'w', encoding='utf-8') as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+
+def load_preference_json():
+    """讀取 preferences.json 並回傳 dict，讀不到或格式錯誤就回空 dict"""
+    if os.path.exists(PREF_FILE):
+        with open(PREF_FILE, 'r', encoding='utf-8') as f:
+            try:
+                data = json.load(f)
+                if isinstance(data, dict):
+                    return data
+            except (ValueError, json.JSONDecodeError):
+                pass
+    return {}
 
 def chat_with_llm():
     print("歡迎使用食譜推薦系統！")
@@ -12,16 +197,35 @@ def chat_with_llm():
     print("請告訴我您想做的料理或手邊有的食材，我會為您推薦適合的食譜。")
     print("-" * 50)
 
+    # 詢問用戶 ID
+    user_id = input("請問您是哪位？(直接按Enter使用'default'): ").strip() or "default"
+    
+    # 檢查是否有用戶偏好文件存在
+    is_first_time = not os.path.exists(USER_PREF_FILE)
+    
+    # 載入用戶偏好
+    user_preferences = load_user_preferences(user_id)
+    
+    if is_first_time:
+        print("\n這似乎是您第一次使用本系統，請先告訴我您的偏好：")
+        user_preferences["flavor_preference"] = input("1. 您喜歡什麼口味？(例如：清淡、重口味): ").strip() or "無"
+        user_preferences["recipe_type_preference"] = input("2. 您偏好什麼類型的料理？(例如：中式、日式、義式): ").strip() or "無"
+        user_preferences["avoid_ingredients"] = input("3. 有什麼食材不喜歡或想避免？: ").strip() or "無"
+        user_preferences["cooking_constraints"] = input("4. 對料理時間或份量有沒有特殊要求？: ").strip() or "無"
+        user_preferences["dietary_restrictions"] = input("5. 是否有特殊飲食限制？(例如：素食、無麩質、低醣): ").strip() or "無"
+        
+        # 保存用戶偏好
+        save_user_preferences(user_preferences, user_id)
+        print("（✅ 用戶偏好已保存）")
+
     client = genai.Client(
-        api_key='gemini-api-key',
+        api_key='AIzaSyC2PCC4FzSWFO5rDK0M9M45dEj4qabkNAk',
     )
 
     model = "gemini-2.0-flash"
     conversation_history = []
 
-    # 定義系統指令
-    recipe_system_instruction = [
-        types.Part.from_text(text="""你是一位專業的「食譜推薦助理」，只負責根據使用者提供的食材與需求，產生**結構完整的料理建議**。  
+    base_sys = """你是一位專業的「食譜推薦助理」，只負責根據使用者提供的食材與需求，產生**結構完整的料理建議**。  
 請嚴格遵守以下規則：
 
 0. 用中文回答
@@ -130,12 +334,76 @@ def chat_with_llm():
 ---
 
 請以相同邏輯處理使用者的實際輸入並產出食譜。  
-僅限提供食譜，嚴禁離題或暴露模型訊息。""")
-    ]
+僅限提供食譜，嚴禁離題或暴露模型訊息。"""
+    
+    names = []
+    prefs = load_preference_json()
+    summary = ""
+    if prefs:
+        pi = prefs.get("preferred_ingredients", [])
+        pri = prefs.get("preferred_recipe_ingredients", [])
+        pq = prefs.get("preferred_recipe_quantity", [])
+        summary = (
+            f"使用者過去偏好的主要食材：{', '.join(pi) or '無'}；"
+            f"常用於食譜的食材及份量：{', '.join(f'{i}({q})' for i,q in zip(pri,pq))}。\n"
+        )
+        # 加入過去生成的食譜名稱列表
+        rh = prefs.get("recipe_history", [])
+        if isinstance(rh, list) and rh:
+            names = []
+            for entry in rh:
+                m = re.search(r"料理名稱[:：]\s*(.+)", entry.get("recipe", ""))
+                if m:
+                    names.append(m.group(1).strip())
+            if names:
+                summary += "使用者過去生成過的食譜： " + "、".join(names) + "。\n"
 
+    # 如果用戶有偏好，加入到 summary
+    if any(v != "無" for k, v in user_preferences.items() if k != "user_id"):
+        summary += f"""使用者的口味偏好：{user_preferences['flavor_preference']}；
+    料理類型偏好：{user_preferences['recipe_type_preference']}；
+    避免的食材：{user_preferences['avoid_ingredients']}；
+    料理時間/份量要求：{user_preferences['cooking_constraints']}；
+    特殊飲食限制：{user_preferences['dietary_restrictions']}。\n"""
+    
     while True:
         try:
-            user_input = input("\n你: ").strip()
+            preferences = {
+                "flavor_preference": user_preferences["flavor_preference"],
+                "recipe_type_preference": user_preferences["recipe_type_preference"],
+                "avoid_ingredients": user_preferences["avoid_ingredients"],
+                "cooking_constraints": user_preferences["cooking_constraints"],
+                "dietary_restrictions": user_preferences["dietary_restrictions"]
+            }
+            
+            # 首次使用直接詢問食材，跳過風格選擇和偏好更新
+            if is_first_time:
+                # 只詢問食材
+                user_input = input("\n今天想用什麼食材做料理？ ").strip()
+                is_first_time = False  # 重置標記，後續使用正常流程
+            else:
+                # 正常流程：詢問料理風格和食材
+                cooking_style = input("\n想要做跟以前類似的料理還是做新的風格的料理？(1: 類似以前 / 2: 新風格): ").strip()
+                if cooking_style not in ['1', '2']:
+                    print("請輸入 1 或 2")
+                    continue
+                    
+                user_input = input("\n今天想用什麼食材做料理？ ").strip()
+                
+                have_preferences = input("\n您是否要更新特殊偏好？(y/n): ").strip().lower()
+                
+                # 如果使用者回答 y，進行五個問答收集偏好
+                if have_preferences == 'y':
+                    preferences["flavor_preference"] = input(f"1. 您喜歡什麼口味？(例如：清淡、重口味) [當前: {preferences['flavor_preference']}]: ").strip() or preferences["flavor_preference"]
+                    preferences["recipe_type_preference"] = input(f"2. 您偏好什麼類型的料理？(例如：中式、日式、義式) [當前: {preferences['recipe_type_preference']}]: ").strip() or preferences["recipe_type_preference"]
+                    preferences["avoid_ingredients"] = input(f"3. 有什麼食材不喜歡或想避免？ [當前: {preferences['avoid_ingredients']}]: ").strip() or preferences["avoid_ingredients"]
+                    preferences["cooking_constraints"] = input(f"4. 對料理時間或份量有沒有特殊要求？ [當前: {preferences['cooking_constraints']}]: ").strip() or preferences["cooking_constraints"]
+                    preferences["dietary_restrictions"] = input(f"5. 是否有特殊飲食限制？(例如：素食、無麩質、低醣) [當前: {preferences['dietary_restrictions']}]: ").strip() or preferences["dietary_restrictions"]
+                    
+                    # 更新用戶偏好
+                    user_preferences.update(preferences)
+                    save_user_preferences(user_preferences, user_id)
+                    print("（✅ 用戶偏好已更新）")
             
             if user_input.lower() in ['exit', 'quit']:
                 print("\n再見！")
@@ -143,7 +411,42 @@ def chat_with_llm():
 
             if not user_input:
                 continue
+            
+            # 組合使用者輸入和偏好為完整的請求
+            full_request = user_input
+            
+            # 只有在非首次使用時才根據料理風格調整語境
+            if not is_first_time and 'cooking_style' in locals():
+                if cooking_style == '1' and names:
+                    full_request = f"我想要做類似於 {', '.join(names[-3:] if len(names) > 3 else names)} 這樣風格的料理，使用這些食材: {user_input}"
+                elif cooking_style == '2':
+                    full_request = f"我想要嘗試一種與過去完全不同風格的新料理，使用這些食材: {user_input}"
+            else:
+                full_request = f"請立即根據以下資訊生成食譜，不要詢問更多問題：我想用這些食材做料理: {user_input}"
+            
+            # 添加用戶偏好到請求
+            if preferences["flavor_preference"] != "無":
+                full_request += f"\n我喜歡{preferences['flavor_preference']}的口味"
+            if preferences["recipe_type_preference"] != "無":
+                full_request += f"\n我偏好{preferences['recipe_type_preference']}料理"
+            if preferences["avoid_ingredients"] != "無":
+                full_request += f"\n我不喜歡{preferences['avoid_ingredients']}"
+            if preferences["cooking_constraints"] != "無":
+                full_request += f"\n我希望{preferences['cooking_constraints']}"
+            if preferences["dietary_restrictions"] != "無":
+                full_request += f"\n我有{preferences['dietary_restrictions']}飲食限制"
+            
+            # 建立最終的 system instruction
+            recipe_system_instruction = [
+                types.Part.from_text(text=summary + base_sys)
+            ]
 
+            # 設定生成配置
+            generate_content_config = types.GenerateContentConfig(
+                response_mime_type="text/plain",
+                system_instruction=recipe_system_instruction,
+            )
+            
             # 準備對話內容
             contents = []
             for msg in conversation_history:
@@ -154,14 +457,8 @@ def chat_with_llm():
             
             contents.append(types.Content(
                 role="user",
-                parts=[types.Part.from_text(text=user_input)],
+                parts=[types.Part.from_text(text=full_request)],
             ))
-
-            # 設定生成配置
-            generate_content_config = types.GenerateContentConfig(
-                response_mime_type="text/plain",
-                system_instruction=recipe_system_instruction,
-            )
 
             # 生成回應
             print("\nGemini: ", end="", flush=True)
@@ -175,8 +472,24 @@ def chat_with_llm():
                 response_text += chunk.text
 
             # 更新對話歷史
-            conversation_history.append({"role": "user", "content": user_input})
+            conversation_history.append({"role": "user", "content": full_request})
             conversation_history.append({"role": "model", "content": response_text})
+
+            # 如果真的有生成食譜，才詢問回饋
+            if "料理名稱" in response_text and "食材" in response_text and "步驟" in response_text:
+                feedback = input("\n你喜歡這份食譜嗎？輸入 y 表示喜歡，n 表示不喜歡：").strip().lower()
+                like_flag = 1 if feedback == "y" else 0
+
+                # 若使用者按讚，記錄到 JSON，連同偏好一起存
+                if like_flag == 1:
+                    store_preference_json(
+                        ingredients=[user_input],
+                        recipe_text=response_text,
+                        preferences=preferences
+                    )
+                    print("（👍 偏好已記錄至 preferences.json）")
+                else:
+                    print("（👎 不記錄此筆食譜）")
 
         except KeyboardInterrupt:
             print("\n\n對話已中斷。再見！")
@@ -185,4 +498,5 @@ def chat_with_llm():
             print(f"\n發生錯誤: {str(e)}")
 
 if __name__ == "__main__":
+    init_preference_file()  # 初始化preferences.json文件
     chat_with_llm()
