@@ -154,13 +154,19 @@ def store_preference_json(ingredients, recipe_text, preferences=None, user_id="d
     with open(PREF_FILE, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
 
-def load_preference_json():
+def load_preference_json(user_id="default"):
     """讀取 preferences.json 並回傳 dict，讀不到或格式錯誤就回空 dict"""
     if os.path.exists(PREF_FILE):
         with open(PREF_FILE, 'r', encoding='utf-8') as f:
             try:
                 data = json.load(f)
                 if isinstance(data, dict):
+                    # 過濾出當前用戶的食譜歷史
+                    if "recipe_history" in data:
+                        data["recipe_history"] = [
+                            entry for entry in data["recipe_history"] 
+                            if entry.get("user_id") == user_id
+                        ]
                     return data
             except (ValueError, json.JSONDecodeError):
                 pass
@@ -325,7 +331,7 @@ def chat_with_llm():
 僅限提供食譜，嚴禁離題或暴露模型訊息。"""
     
     names = []
-    prefs = load_preference_json()
+    prefs = load_preference_json(user_id)
     summary = ""
     if prefs:
         pi = prefs.get("preferred_ingredients", [])

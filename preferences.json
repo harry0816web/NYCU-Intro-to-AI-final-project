@@ -139,6 +139,48 @@
       "avoid_ingredients": "無",
       "cooking_constraints": "無",
       "dietary_restrictions": "無"
+    },
+    {
+      "timestamp": "2025-05-17T16:11:18.416639",
+      "input": [
+        "蝦子"
+      ],
+      "recipe_ingredients": [
+        "蝦子",
+        "蒜",
+        "薑",
+        "乾辣椒",
+        "花椒",
+        "料酒",
+        "生抽",
+        "老抽",
+        "糖",
+        "醋",
+        "鹽",
+        "食用油",
+        "蔥花"
+      ],
+      "recipe_quantity": [
+        "300克",
+        "3瓣",
+        "1小塊",
+        "5-8根",
+        "1茶匙",
+        "1湯匙",
+        "2湯匙",
+        "1茶匙",
+        "1茶匙",
+        "1茶匙",
+        "少許",
+        "適量",
+        "適量"
+      ],
+      "user_id": "Apollo",
+      "flavor_preference": "重口味",
+      "recipe_type_preference": "中式",
+      "avoid_ingredients": "無",
+      "cooking_constraints": "無",
+      "dietary_restrictions": "無"
     }
   ]
 }
