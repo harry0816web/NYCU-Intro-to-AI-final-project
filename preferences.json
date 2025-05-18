@@ -2,9 +2,7 @@
   "recipe_history": [
     {
       "timestamp": "2025-05-17T15:38:28.993652",
-      "input": [
-        "洋蔥 雞蛋"
-      ],
+      "input": ["洋蔥 雞蛋"],
       "recipe_ingredients": [
         "洋蔥",
         "雞蛋",
@@ -13,14 +11,7 @@
         "砂糖",
         "白胡椒粉"
       ],
-      "recipe_quantity": [
-        "半顆",
-        "3 顆",
-        "適量",
-        "1 小匙",
-        "0.5 小匙",
-        "少許"
-      ],
+      "recipe_quantity": ["半顆", "3 顆", "適量", "1 小匙", "0.5 小匙", "少許"],
       "flavor_preference": "無",
       "recipe_type_preference": "無",
       "avoid_ingredients": "無",
@@ -30,9 +21,7 @@
     },
     {
       "timestamp": "2025-05-17T15:52:30.638418",
-      "input": [
-        "蝦子"
-      ],
+      "input": ["蝦子"],
       "recipe_ingredients": [
         "蝦仁",
         "酪梨",
@@ -68,9 +57,7 @@
     },
     {
       "timestamp": "2025-05-17T15:53:38.311728",
-      "input": [
-        "蝦子"
-      ],
+      "input": ["蝦子"],
       "recipe_ingredients": [
         "蝦仁",
         "義大利麵",
@@ -102,9 +89,7 @@
     },
     {
       "timestamp": "2025-05-17T15:54:39.306436",
-      "input": [
-        "蝦子"
-      ],
+      "input": ["蝦子"],
       "recipe_ingredients": [
         "蝦子",
         "蒜頭",
@@ -142,9 +127,7 @@
     },
     {
       "timestamp": "2025-05-17T19:30:26.212718",
-      "input": [
-        "雞胸肉、洋蔥"
-      ],
+      "input": ["雞胸肉、洋蔥"],
       "recipe_ingredients": [],
       "recipe_quantity": [],
       "user_id": "default",
@@ -156,9 +139,7 @@
     },
     {
       "timestamp": "2025-05-17T19:30:57.803435",
-      "input": [
-        "雞胸肉、洋蔥"
-      ],
+      "input": ["雞胸肉、洋蔥"],
       "recipe_ingredients": [],
       "recipe_quantity": [],
       "user_id": "tuna",
@@ -170,9 +151,7 @@
     },
     {
       "timestamp": "2025-05-17T19:32:16.034919",
-      "input": [
-        "雞胸肉、洋蔥、蝦子"
-      ],
+      "input": ["雞胸肉、洋蔥、蝦子"],
       "recipe_ingredients": [],
       "recipe_quantity": [],
       "user_id": "tuna",
@@ -184,9 +163,7 @@
     },
     {
       "timestamp": "2025-05-17T19:37:15.084122",
-      "input": [
-        "雞胸肉、洋蔥"
-      ],
+      "input": ["雞胸肉、洋蔥"],
       "recipe_ingredients": [],
       "recipe_quantity": [],
       "user_id": "tuna",
@@ -198,9 +175,7 @@
     },
     {
       "timestamp": "2025-05-17T19:37:38.084020",
-      "input": [
-        "雞胸肉、洋蔥"
-      ],
+      "input": ["雞胸肉、洋蔥"],
       "recipe_ingredients": [],
       "recipe_quantity": [],
       "user_id": "test",
@@ -212,11 +187,7 @@
     },
     {
       "timestamp": "2025-05-17T19:58:09.437635",
-      "input": [
-        "雞胸肉",
-        "洋蔥",
-        "蝦子"
-      ],
+      "input": ["雞胸肉", "洋蔥", "蝦子"],
       "recipe_ingredients": [],
       "recipe_quantity": [],
       "user_id": "default",
@@ -228,9 +199,7 @@
     },
     {
       "timestamp": "2025-05-17T20:19:53.356077",
-      "input": [
-        "蛋"
-      ],
+      "input": ["蛋"],
       "recipe_ingredients": [],
       "recipe_quantity": [],
       "user_id": "default",
@@ -242,9 +211,7 @@
     },
     {
       "timestamp": "2025-05-18T14:56:22.907450",
-      "input": [
-        "豬肉"
-      ],
+      "input": ["豬肉"],
       "recipe_ingredients": [],
       "recipe_quantity": [],
       "user_id": "Harry",
@@ -256,9 +223,7 @@
     },
     {
       "timestamp": "2025-05-18T14:57:29.978316",
-      "input": [
-        "老二"
-      ],
+      "input": ["老二"],
       "recipe_ingredients": [],
       "recipe_quantity": [],
       "user_id": "Harry",
@@ -270,9 +235,7 @@
     },
     {
       "timestamp": "2025-05-18T14:58:53.743534",
-      "input": [
-        "老二"
-      ],
+      "input": ["老二"],
       "recipe_ingredients": [],
       "recipe_quantity": [],
       "user_id": "Harry",
@@ -284,9 +247,7 @@
     },
     {
       "timestamp": "2025-05-18T15:16:51.155937",
-      "input": [
-        "豬肉"
-      ],
+      "input": ["豬肉"],
       "recipe_ingredients": [],
       "recipe_quantity": [],
       "user_id": "{{ user_id }}",
@@ -298,9 +259,7 @@
     },
     {
       "timestamp": "2025-05-18T15:30:51.316913",
-      "input": [
-        "豬肉"
-      ],
+      "input": ["豬肉"],
       "recipe_ingredients": [],
       "recipe_quantity": [],
       "user_id": "{{ user_id }}",
@@ -312,11 +271,41 @@
     },
     {
       "timestamp": "2025-05-18T15:37:57.459426",
-      "input": [
-        "豬肉"
-      ],
+      "input": ["豬肉"],
       "recipe_ingredients": [],
       "recipe_quantity": [],
+      "user_id": "test",
+      "flavor_preference": "無",
+      "recipe_type_preference": "法式",
+      "avoid_ingredients": "無",
+      "cooking_constraints": "無",
+      "dietary_restrictions": "無"
+    },
+    {
+      "timestamp": "2025-05-18T15:50:04.386090",
+      "input": ["豬肉"],
+      "recipe_ingredients": [
+        "**豬排",
+        "**蘋果",
+        "**洋蔥",
+        "**黃油",
+        "**橄欖油",
+        "**白蘭地 (可選)",
+        "**新鮮百里香 (可選)",
+        "**鹽",
+        "**黑胡椒"
+      ],
+      "recipe_quantity": [
+        "** 4塊，約1.5-2厘米厚，帶骨或無骨皆可。",
+        "** 2個，最好選擇略帶酸味的品種，例如青蘋果或富士蘋果。",
+        "** 1個，中等大小。",
+        "** 30克。",
+        "** 2湯匙。",
+        "** 2湯匙。",
+        "** 幾枝。",
+        "** 適量。",
+        "** 適量。"
+      ],
       "user_id": "test",
       "flavor_preference": "無",
       "recipe_type_preference": "法式",

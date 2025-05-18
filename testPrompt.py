@@ -115,23 +115,74 @@ def store_preference_json(ingredients, recipe_text, preferences=None, user_id="d
     # 確保 recipe_history 欄位存在
     data.setdefault("recipe_history", [])
 
-    # 擷取 recipe_text 中的食材表格
+    # 擷取 recipe_text 中的食材表格 - 改進版本
     lines = recipe_text.strip().splitlines()
-    table_lines = [line for line in lines if "|" in line and "---" not in line]
     extracted_ingredients = []
     extracted_quantity = []
 
-    for line in table_lines[1:]:  # 跳過表頭
-        parts = [cell.strip() for cell in line.strip().split('|') if cell.strip()]
-        if len(parts) >= 2:
-            extracted_ingredients.append(parts[0])
-            extracted_quantity.append(parts[1])
+    # 方法1：標準 Markdown 表格格式解析
+    table_lines = [line for line in lines if "|" in line and "---" not in line]
+    if len(table_lines) > 1:  # 至少有表頭和一行數據
+        for line in table_lines[1:]:  # 跳過表頭
+            parts = [cell.strip() for cell in line.strip().split('|') if cell.strip()]
+            if len(parts) >= 2:
+                extracted_ingredients.append(parts[0])
+                extracted_quantity.append(parts[1])
+    
+    # 方法2：嘗試基於關鍵字或格式的解析（如果方法1沒有找到結果）
+    if not extracted_ingredients:
+        # 找出食材段落的開始和結束
+        ingredients_section_start = -1
+        ingredients_section_end = -1
+        
+        for i, line in enumerate(lines):
+            if "食材" in line or "材料" in line or "【食材】" in line:
+                ingredients_section_start = i
+            elif ingredients_section_start > -1 and ("步驟" in line or "做法" in line or "【步驟】" in line):
+                ingredients_section_end = i
+                break
+        
+        # 如果找到食材段落
+        if ingredients_section_start > -1:
+            if ingredients_section_end == -1:  # 沒找到結束位置，設定一個合理的範圍
+                ingredients_section_end = min(ingredients_section_start + 20, len(lines))
+            
+            # 解析食材段落中的每一行
+            for i in range(ingredients_section_start + 1, ingredients_section_end):
+                if i < len(lines) and lines[i].strip():
+                    line = lines[i].strip()
+                    
+                    # 嘗試分割食材和份量 (多種可能的分隔符)
+                    for separator in ['：', ':', '、', ' ', '　']:
+                        if separator in line:
+                            parts = line.split(separator, 1)
+                            if len(parts) == 2 and all(parts):
+                                ingredient = parts[0].strip()
+                                quantity = parts[1].strip()
+                                
+                                # 進一步處理，去除雜項
+                                for prefix in ['• ', '- ', '* ', '· ']:
+                                    if ingredient.startswith(prefix):
+                                        ingredient = ingredient[len(prefix):].strip()
+                                
+                                extracted_ingredients.append(ingredient)
+                                extracted_quantity.append(quantity)
+                                break
 
     # 清理使用者輸入食材
-    clean_ingredients = [
-        ing for ing in ingredients
-        if ing.strip() not in {"無", "沒有", "無 請直接提供給我料理", "沒有 請推薦給我"}
-    ]
+    clean_ingredients = []
+    for ing in ingredients:
+        ing = ing.strip()
+        if ing and ing not in {"無", "沒有", "無 請直接提供給我料理", "沒有 請推薦給我"}:
+            # 分割多個食材（如果用逗號或空格分隔）
+            for sub_ing in re.split(r'[,，、\s]+', ing):
+                if sub_ing.strip():
+                    clean_ingredients.append(sub_ing.strip())
+
+    # 如果還是沒有食材，則至少保留使用者輸入的食材
+    if not extracted_ingredients and clean_ingredients:
+        extracted_ingredients = clean_ingredients
+        extracted_quantity = ["適量"] * len(clean_ingredients)
 
     # 創建記錄
     recipe_entry = {
