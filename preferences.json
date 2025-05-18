@@ -139,6 +139,106 @@
       "avoid_ingredients": "無",
       "cooking_constraints": "無",
       "dietary_restrictions": "無"
+    },
+    {
+      "timestamp": "2025-05-17T19:30:26.212718",
+      "input": [
+        "雞胸肉、洋蔥"
+      ],
+      "recipe_ingredients": [],
+      "recipe_quantity": [],
+      "user_id": "default",
+      "flavor_preference": "無",
+      "recipe_type_preference": "無",
+      "avoid_ingredients": "無",
+      "cooking_constraints": "無",
+      "dietary_restrictions": "無"
+    },
+    {
+      "timestamp": "2025-05-17T19:30:57.803435",
+      "input": [
+        "雞胸肉、洋蔥"
+      ],
+      "recipe_ingredients": [],
+      "recipe_quantity": [],
+      "user_id": "tuna",
+      "flavor_preference": "無",
+      "recipe_type_preference": "無",
+      "avoid_ingredients": "無",
+      "cooking_constraints": "無",
+      "dietary_restrictions": "無"
+    },
+    {
+      "timestamp": "2025-05-17T19:32:16.034919",
+      "input": [
+        "雞胸肉、洋蔥、蝦子"
+      ],
+      "recipe_ingredients": [],
+      "recipe_quantity": [],
+      "user_id": "tuna",
+      "flavor_preference": "清淡",
+      "recipe_type_preference": "無",
+      "avoid_ingredients": "無",
+      "cooking_constraints": "無",
+      "dietary_restrictions": "無"
+    },
+    {
+      "timestamp": "2025-05-17T19:37:15.084122",
+      "input": [
+        "雞胸肉、洋蔥"
+      ],
+      "recipe_ingredients": [],
+      "recipe_quantity": [],
+      "user_id": "tuna",
+      "flavor_preference": "無",
+      "recipe_type_preference": "無",
+      "avoid_ingredients": "無",
+      "cooking_constraints": "無",
+      "dietary_restrictions": "無"
+    },
+    {
+      "timestamp": "2025-05-17T19:37:38.084020",
+      "input": [
+        "雞胸肉、洋蔥"
+      ],
+      "recipe_ingredients": [],
+      "recipe_quantity": [],
+      "user_id": "test",
+      "flavor_preference": "清淡",
+      "recipe_type_preference": "無",
+      "avoid_ingredients": "無",
+      "cooking_constraints": "無",
+      "dietary_restrictions": "無"
+    },
+    {
+      "timestamp": "2025-05-17T19:58:09.437635",
+      "input": [
+        "雞胸肉",
+        "洋蔥",
+        "蝦子"
+      ],
+      "recipe_ingredients": [],
+      "recipe_quantity": [],
+      "user_id": "default",
+      "flavor_preference": "無",
+      "recipe_type_preference": "無",
+      "avoid_ingredients": "無",
+      "cooking_constraints": "無",
+      "dietary_restrictions": "無"
+    },
+    {
+      "timestamp": "2025-05-17T20:19:53.356077",
+      "input": [
+        "蛋"
+      ],
+      "recipe_ingredients": [],
+      "recipe_quantity": [],
+      "user_id": "default",
+      "flavor_preference": "無",
+      "recipe_type_preference": "無",
+      "avoid_ingredients": "無",
+      "cooking_constraints": "無",
+      "dietary_restrictions": "無"
     }
   ]
 }

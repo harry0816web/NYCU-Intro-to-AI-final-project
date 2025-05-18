@@ -207,7 +207,7 @@ def chat_with_llm():
         print("（✅ 用戶偏好已保存）")
 
     client = genai.Client(
-        api_key='AIzaSyC2PCC4FzSWFO5rDK0M9M45dEj4qabkNAk',
+        api_key='AIzaSyDXeS03GZe0zCTbUsPl9YRadBR1MJXYikQ',
     )
 
     model = "gemini-2.0-flash"
@@ -430,7 +430,7 @@ def chat_with_llm():
             
             # 建立最終的 system instruction
             recipe_system_instruction = [
-                types.Part.from_text(text=summary + base_sys)
+                types.Part(text=summary + base_sys)
             ]
 
             # 設定生成配置
@@ -444,12 +444,12 @@ def chat_with_llm():
             for msg in conversation_history:
                 contents.append(types.Content(
                     role=msg["role"],
-                    parts=[types.Part.from_text(text=msg["content"])],
+                    parts=[types.Part(text=msg["content"])],
                 ))
             
             contents.append(types.Content(
                 role="user",
-                parts=[types.Part.from_text(text=full_request)],
+                parts=[types.Part(text=full_request)],
             ))
 
             # 生成回應
