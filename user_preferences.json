@@ -8,8 +8,8 @@
   },
   "Apollo": {
     "user_id": "Apollo",
-    "flavor_preference": "重口味",
-    "recipe_type_preference": "中式",
+    "flavor_preference": "無",
+    "recipe_type_preference": "無",
     "avoid_ingredients": "無",
     "cooking_constraints": "無",
     "dietary_restrictions": "無"
@@ -22,8 +22,15 @@
     "dietary_restrictions": "無"
   },
   "test": {
-    "flavor_preference": "清淡",
-    "recipe_type_preference": "無",
+    "flavor_preference": "無",
+    "recipe_type_preference": "法式",
+    "avoid_ingredients": "無",
+    "cooking_constraints": "無",
+    "dietary_restrictions": "無"
+  },
+  "Harry": {
+    "flavor_preference": "無",
+    "recipe_type_preference": "台式",
     "avoid_ingredients": "無",
     "cooking_constraints": "無",
     "dietary_restrictions": "無"

@@ -207,7 +207,7 @@ def chat_with_llm():
         print("（✅ 用戶偏好已保存）")
 
     client = genai.Client(
-        api_key='AIzaSyDXeS03GZe0zCTbUsPl9YRadBR1MJXYikQ',
+        api_key='AIzaSyC2PCC4FzSWFO5rDK0M9M45dEj4qabkNAk',
     )
 
     model = "gemini-2.0-flash"

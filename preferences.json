@@ -239,6 +239,90 @@
       "avoid_ingredients": "無",
       "cooking_constraints": "無",
       "dietary_restrictions": "無"
+    },
+    {
+      "timestamp": "2025-05-18T14:56:22.907450",
+      "input": [
+        "豬肉"
+      ],
+      "recipe_ingredients": [],
+      "recipe_quantity": [],
+      "user_id": "Harry",
+      "flavor_preference": "無",
+      "recipe_type_preference": "無",
+      "avoid_ingredients": "無",
+      "cooking_constraints": "無",
+      "dietary_restrictions": "無"
+    },
+    {
+      "timestamp": "2025-05-18T14:57:29.978316",
+      "input": [
+        "老二"
+      ],
+      "recipe_ingredients": [],
+      "recipe_quantity": [],
+      "user_id": "Harry",
+      "flavor_preference": "無",
+      "recipe_type_preference": "無",
+      "avoid_ingredients": "無",
+      "cooking_constraints": "無",
+      "dietary_restrictions": "無"
+    },
+    {
+      "timestamp": "2025-05-18T14:58:53.743534",
+      "input": [
+        "老二"
+      ],
+      "recipe_ingredients": [],
+      "recipe_quantity": [],
+      "user_id": "Harry",
+      "flavor_preference": "無",
+      "recipe_type_preference": "台式",
+      "avoid_ingredients": "無",
+      "cooking_constraints": "無",
+      "dietary_restrictions": "無"
+    },
+    {
+      "timestamp": "2025-05-18T15:16:51.155937",
+      "input": [
+        "豬肉"
+      ],
+      "recipe_ingredients": [],
+      "recipe_quantity": [],
+      "user_id": "{{ user_id }}",
+      "flavor_preference": "重口味",
+      "recipe_type_preference": "無",
+      "avoid_ingredients": "無",
+      "cooking_constraints": "無",
+      "dietary_restrictions": "無"
+    },
+    {
+      "timestamp": "2025-05-18T15:30:51.316913",
+      "input": [
+        "豬肉"
+      ],
+      "recipe_ingredients": [],
+      "recipe_quantity": [],
+      "user_id": "{{ user_id }}",
+      "flavor_preference": "清淡",
+      "recipe_type_preference": "日式",
+      "avoid_ingredients": "無",
+      "cooking_constraints": "無",
+      "dietary_restrictions": "無"
+    },
+    {
+      "timestamp": "2025-05-18T15:37:57.459426",
+      "input": [
+        "豬肉"
+      ],
+      "recipe_ingredients": [],
+      "recipe_quantity": [],
+      "user_id": "test",
+      "flavor_preference": "無",
+      "recipe_type_preference": "法式",
+      "avoid_ingredients": "無",
+      "cooking_constraints": "無",
+      "dietary_restrictions": "無"
     }
   ]
 }
