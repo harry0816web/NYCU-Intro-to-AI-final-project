@@ -115,7 +115,10 @@ from testPrompt import (
     save_user_preferences,
     store_preference_json,
     get_optimized_system_prompt,
-    build_user_request
+    build_user_request,
+    extract_cooking_timeline,      # 新增
+    format_timeline_text,          # 新增
+    format_timeline_checklist      # 新增
 )
 
 # 初始化
@@ -243,6 +246,7 @@ def api_recipe():
     data = request.json or {}
     user_id = data.get("user_id", "default")
     ingredients = data.get("ingredients", "")
+    include_timeline = data.get("include_timeline", True)
     
     # 🔥 從請求中獲取用戶當前的偏好設置
     current_prefs = {
@@ -254,11 +258,36 @@ def api_recipe():
         "dietary_restrictions": data.get("dietary_restrictions", "無")
     }
     
-    # 🔥 先保存用戶偏好到 user_preferences.json
+    # 🔥 先保存用戶偏好
     save_user_preferences(current_prefs, user_id)
     
     # 生成食譜
     recipe = generate_recipe(user_id, ingredients, current_prefs)
+    
+    result = {"recipe": recipe}
+    
+    # 🔥 生成時間軸
+    if include_timeline and "料理步驟" in recipe:
+        try:
+            steps, total_time = extract_cooking_timeline(recipe)
+            if steps:
+                timeline_text = format_timeline_text(steps, total_time)
+                checklist = format_timeline_checklist(steps, total_time)
+                
+                result.update({
+                    "timeline": timeline_text,
+                    "checklist": checklist,
+                    "total_time": total_time,
+                    "steps_data": steps,
+                    "has_timeline": True
+                })
+            else:
+                result["has_timeline"] = False
+                result["timeline_error"] = "食譜格式不包含時間信息"
+        except Exception as e:
+            print(f"生成時間軸時發生錯誤: {e}")
+            result["has_timeline"] = False
+            result["timeline_error"] = str(e)
     
     # 清空檔案
     for folder in (UPLOAD_FOLDER, os.path.join("runs", "detect")):
@@ -273,7 +302,7 @@ def api_recipe():
                 except:
                     pass
     
-    return jsonify({"recipe": recipe})
+    return jsonify(result)
 
 @app.route("/api/store_recipe", methods=["POST"])
 def api_store_recipe():
