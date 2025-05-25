@@ -9,6 +9,27 @@ This project develops a smart recipe generation system that starts with an ingre
 We used the [Kitchen Computer Vision Project](https://universe.roboflow.com/nizarbtk/kitchen-cjfwg) dataset because the ingredients that are more commonly used in our daily life.
 
 ## Main Approach
+### 1. Ingredient Detection
+
+*Baseline – YOLOv5s Pre-trained Model*
+
+As our starting point, we used the pre-trained YOLOv5s model without any fine-tuning. We tested its performance on 10 real-world photos of ingredients laid out on a table.
+
+*Our Approach – Fine-tuned YOLOv8s Model*
+
+We fine-tuned a YOLOv8s pre-trained model using a custom dataset composed of commonly seen food ingredients. The dataset was collected from Roboflow and labeled using the YOLO format.
+
+To enhance generalization, we applied multiple augmentation techniques such as Mosaic, MixUp, Copy-Paste, rotation, and scaling. 
+
+### 2. Recipe Generation
+
+*Baseline – Gemini API without Prompt Engineering*
+
+We initially passed detected ingredients directly into Gemini , resulting in unstructured and generic recipe outputs.
+
+*Our Approach – Gemini with Prompt Engineering + Function Calling*
+
+We applied prompt engineering to guide Gemini in generating structured recipes, and used prompt personalization to tailor responses based on user preferences. Function calling was also integrated to dynamically retrieve user data, making the generation process more consistent, personalized, and extensible.
 
 ## Application
 In the application directory, you will find our application: a website that can convert ingredient images into detailed step-by-step recipes.
