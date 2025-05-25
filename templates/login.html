@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <title>登入 - 食譜推薦系統</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h1>登入食譜推薦系統</h1>
+
+      {% if error %}
+      <div class="error">{{ error }}</div>
+      {% endif %}
+
+      <form method="post" action="/login" class="auth-form">
+        <div class="form-group">
+          <label for="username">用戶名稱</label>
+          <input type="text" id="username" name="username" required />
+        </div>
+
+        <div class="form-group">
+          <label for="password">密碼</label>
+          <input type="password" id="password" name="password" required />
+        </div>
+
+        <button type="submit">登入</button>
+
+        <div class="form-footer">
+          還沒有帳號？<a href="/register">註冊新帳號</a>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>
