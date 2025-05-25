@@ -58,4 +58,25 @@ In the application directory, you will find our application: a website that can 
    python app.py
    ```
 4. If the application runs successfully, you will see the following screen:
-   
+   ![image](https://hackmd.io/_uploads/SkCkSwgfxe.png)
+5. If you don't have an account, please **register** and **log in** to the system first.  
+After that, you will see the following screen:
+![image](https://hackmd.io/_uploads/BJDISwezxl.png)
+
+6. Click on "選擇檔案" to upload your food ingredient photo (.jpg format is recommended for higher accuracy), then click on "Confirm and Recognize Ingredients" to activate the food recognition system.
+
+7. Wait for a moment, and the recognized ingredient list will display the results. If there are any missing ingredients, you can manually add them yourself.
+![image](https://hackmd.io/_uploads/ryL6vPxGlg.png)
+
+8. Here are your user preferences. You can customize the recipe based on your dietary preferences and restrictions.
+![image](https://hackmd.io/_uploads/Hy4eQclGex.png)
+
+9. Select either "創新料理" or "過往推薦" to decide whether the generated recipe should be based on your previous preferences or created from scratch.  
+![image](https://hackmd.io/_uploads/H1DgKqezxe.png)
+
+10. Finally, click on the "生成食譜" button, and you will receive a detailed recipe with step-by-step instructions to guide you through the process.
+![image](https://hackmd.io/_uploads/BySBtqxfel.png)
+
+11. At the end of the recipe, you can choose whether you like or dislike the recipe. If you like it, the system will save it and use your feedback to adjust future recipes based on your preferences.
+![image](https://hackmd.io/_uploads/S1DwK9eMll.png)
+
