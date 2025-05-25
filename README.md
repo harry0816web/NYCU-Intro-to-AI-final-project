@@ -19,7 +19,7 @@ In the application directory, you will find our application: a website that can 
    cd NYCU-Intro-to-AI-final-project
    pip install -r requirements.txt
    ```
-2. Insert your Gemini API key in `.env` on line 1:
+2. Insert your Gemini API key in `.env`:
    ```python
    GOOGLE_API_KEY = 'your-api-key-here'
    ```
