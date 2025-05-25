@@ -5,6 +5,9 @@ import json, re
 from datetime import datetime
 from google import genai
 from google.genai import types
+from PIL import Image
+import io
+import uuid
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
 
@@ -90,6 +93,20 @@ def logout():
 
 #############################################################################
 
+# 模擬一個分類器（你可以替換成你自己的模型）
+def classify_image(image_path):
+    # 讀取圖片
+    from PIL import Image
+    img = Image.open(image_path)
+
+    # 前處理 → 模型預測
+    # result = model.predict(img)
+    # return result
+
+    # 暫時回傳假資料
+    return "雞胸肉"
+
+
 # 載入你原本的功能函式
 from testPrompt import (
     init_preference_file,
@@ -164,21 +181,47 @@ def api_preferences():
         prefs = load_user_preferences(user_id)
         return jsonify(prefs)
 
+UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')
+
 @app.route("/api/recipe", methods=["POST"])
 def api_recipe():
     data = request.json or {}
     user_id = data.get("user_id", "default")
-    ingredients = data.get("ingredients", "")
-    # 讀剛剛存的偏好（或取 data 內的）
-    prefs = load_user_preferences(user_id)
-    # 產生食譜
+    # 處理上傳的圖片
+    files = request.files.getlist("ingredients")
+    if not files:
+        return jsonify({"error": "請至少上傳一張圖片"}), 400
+    
+    # 確保 uploads 資料夾存在
+    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+    
+    # 儲存所有上傳圖片的路徑
+    saved_paths = []
+    for file in files:
+        ext = os.path.splitext(file.filename)[-1]
+        filename = f"{uuid.uuid4().hex}{ext}"
+        file_path = os.path.join(UPLOAD_FOLDER, filename)
+        file.save(file_path)
+        saved_paths.append(file_path)
+
     try:
+        # 🔥 這裡用 saved_paths 處理圖片辨識邏輯
+        # 模擬每張圖片回傳 "食材名稱"
+        ingredients_list = []
+        for img_path in saved_paths:
+            result = classify_image(img_path)
+            ingredients_list.append(result)
+        ingredients = "、".join(ingredients_list)
+        prefs = load_user_preferences(user_id)
         recipe = generate_recipe(user_id, ingredients, prefs)
-        return jsonify({"recipe": recipe})
-    except Exception as e:
-        import traceback
-        traceback.print_exc()  # <<< 這行會印出完整錯誤堆疊
-        return jsonify({"error": str(e)}), 503
+        return jsonify({"recipe": recipe, "ingredients": ingredients_list})
+    finally:
+        # 確保食譜生成後刪除所有圖片
+        for path in saved_paths:
+            try:
+                os.remove(path)
+            except Exception as e:
+                print(f"刪除檔案失敗: {path}, {e}")
 
 @app.route("/api/store_recipe", methods=["POST"])
 def api_store_recipe():

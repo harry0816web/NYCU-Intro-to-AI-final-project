@@ -6,5 +6,9 @@
   "Apollo": {
     "password": "scrypt:32768:8:1$kVh1zyylMi3ISyL0$43720373ec80c74cc6d11df89ab879fa218c3d4bc07e5648a0090d71ffaf56f2494a59d2fd4231d17cf50a76a1d281d7c72742a30b96152a11addd5ab33b88c0",
     "created_at": "2025-05-18T15:18:50.859507"
+  },
+  "tuna": {
+    "password": "pbkdf2:sha256:260000$fDdVb0ZBvU2yb9zb$cd00f9d0a27cd489ee63b8fb58a8a97c2ff3fa12df063e1b8aded6c41521666c",
+    "created_at": "2025-05-25T10:49:44.824440"
   }
 }

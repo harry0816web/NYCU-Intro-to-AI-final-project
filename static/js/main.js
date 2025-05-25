@@ -35,30 +35,30 @@ document.addEventListener("DOMContentLoaded", () => {
   // 4️⃣ 送出表單產生食譜 + 顯示回饋按鈕
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
-
     const userId = document.querySelector(".user-panel span").textContent.replace("歡迎, ", "").trim();
-
-    const payload = {
-      user_id: userId,
-      ingredients: form.ingredients.value.trim(),
-      flavor_preference: flavorIpt.value.trim() || "無",
-      recipe_type_preference: typeIpt.value.trim() || "無",
-      avoid_ingredients: avoidIpt.value.trim() || "無",
-      cooking_constraints: timeIpt.value.trim() || "無",
-      dietary_restrictions: dietIpt.value.trim() || "無",
-    };
-
-    if (!payload.ingredients) {
-      alert("請輸入至少一種食材");
+    // 用 FormData 抓取整個 <form> 的內容，包括圖片
+    const formData = new FormData(form);
+    formData.append("user_id", userId);  // 加入 user_id
+    // 檢查圖片是否至少有一張
+    const files = document.getElementById("ingredients").files;
+    if (!files.length) {
+      alert("請至少上傳一張食材圖片");
       return;
     }
-    // 存偏好
+
+    // 儲存偏好（這部分仍用 JSON）
     await fetch("/api/preferences", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
+      body: JSON.stringify({
+        user_id: userId,
+        flavor_preference: document.getElementById("flavor_preference").value.trim() || "無",
+        recipe_type_preference: document.getElementById("recipe_type_preference").value.trim() || "無",
+        avoid_ingredients: document.getElementById("avoid_ingredients").value.trim() || "無",
+        cooking_constraints: document.getElementById("cooking_constraints").value.trim() || "無",
+        dietary_restrictions: document.getElementById("dietary_restrictions").value.trim() || "無",
+      }),
     });
-
     loading.style.display = "";
     result.textContent = "";
     feedback.style.display = "none";
@@ -66,16 +66,14 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const resp = await fetch("/api/recipe", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: formData,  // 重點！傳送圖片 + 文字偏好
       });
       const data = await resp.json();
-
       if (resp.ok) {
         lastRecipe = data.recipe;
-        lastPayload = payload;
+        lastPayload = { user_id: userId, ingredients: data.ingredients.join("、") };
         result.textContent = lastRecipe;
-        feedback.style.display = ""; // 顯示 👍 👎
+        feedback.style.display = "";
       } else {
         result.textContent = "錯誤：" + (data.error || resp.statusText);
       }
@@ -85,6 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
       loading.style.display = "none";
     }
   });
+
 
   // 5️⃣ 回饋按鈕
   btnLike.addEventListener("click", async () => {

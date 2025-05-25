@@ -1,105 +1,74 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
-  <head>
-    <meta charset="UTF-8" />
-    <title>食譜推薦系統</title>
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/style.css') }}"
-    />
-  </head>
 
-  <body>
-    <div class="container">
-      <h1>食譜推薦系統</h1>
-      <form id="recipeForm">
-        <div class="user-panel">
-          <span>歡迎, {{ user_id }}</span>
-          <a href="/logout" class="logout-btn">登出</a>
-        </div>
-        <!-- 使用者名稱／食材等欄位... -->
-        <div class="form-group">
-          <label>食材（用逗號分隔）</label>
-          <input
-            type="text"
-            id="ingredients"
-            name="ingredients"
-            placeholder="雞胸肉、洋蔥、蛋"
-          />
-        </div>
-        <!-- 偏好欄位... -->
-        <h2>✨ 使用者偏好 ✨</h2>
+<head>
+  <meta charset="UTF-8" />
+  <title>食譜推薦系統</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
 
-        <div class="form-group">
-          <label>1. 口味偏好（清淡、重口味）</label>
-          <input
-            type="text"
-            id="flavor_preference"
-            name="flavor_preference"
-            value="{{ prefs.flavor_preference}}"
-            placeholder="例：清淡、重口味"
-          />
-        </div>
-
-        <div class="form-group">
-          <label>2. 料理風格（中式、日式）</label>
-          <input
-            type="text"
-            id="recipe_type_preference"
-            name="recipe_type_preference"
-            value="{{ prefs.recipe_type_preference}}"
-            placeholder="例：中式、日式"
-          />
-        </div>
-
-        <div class="form-group">
-          <label>3. 避免食材（蛋、香菜）</label>
-          <input
-            type="text"
-            id="avoid_ingredients"
-            name="avoid_ingredients"
-            value="{{ prefs.avoid_ingredients}}"
-            placeholder="例：香菜、花生"
-          />
-        </div>
-
-        <div class="form-group">
-          <label>4. 時間或份量的特殊要求</label>
-          <input
-            type="text"
-            id="cooking_constraints"
-            name="cooking_constraints"
-            value="{{ prefs.cooking_constraints}}"
-            placeholder="例：15 分鐘內"
-          />
-        </div>
-
-        <div class="form-group">
-          <label>5. 特殊飲食限制（素食、無麩質、低醣）</label>
-          <input
-            type="text"
-            id="dietary_restrictions"
-            name="dietary_restrictions"
-            value="{{ prefs.dietary_restrictions}}"
-            placeholder="例：素食"
-          />
-        </div>
-
-        <button type="submit">產生食譜</button>
-      </form>
-
-      <div id="loading" style="display: none">產生中，請稍候…</div>
-
-      <pre id="result"></pre>
-
-      <!-- 回饋按鈕區，預設隱藏 -->
-      <div id="feedback" style="display: none; margin-top: 1rem">
-        <button id="btnLike">👍 喜歡</button>
-        <button id="btnDislike">👎 不喜歡</button>
+<body>
+  <div class="container">
+    <h1>食譜推薦系統</h1>
+    <form id="recipeForm">
+      <div class="user-panel">
+        <span>歡迎, {{ user_id }}</span>
+        <a href="/logout" class="logout-btn">登出</a>
       </div>
-    </div>
+      <!-- 使用者名稱／食材等欄位... -->
+      <div class="form-group">
+        <label>請上傳食材圖片（可多選）</label>
+        <input type="file" id="ingredients" name="ingredients" accept="image/*" multiple />
+      </div>
+      <!-- 偏好欄位... -->
+      <h2>✨ 使用者偏好 ✨</h2>
 
-    <!-- 一定要放在 body 底部 -->
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-  </body>
+      <div class="form-group">
+        <label>1. 口味偏好（清淡、重口味）</label>
+        <input type="text" id="flavor_preference" name="flavor_preference" value="{{ prefs.flavor_preference}}"
+          placeholder="例：清淡、重口味" />
+      </div>
+
+      <div class="form-group">
+        <label>2. 料理風格（中式、日式）</label>
+        <input type="text" id="recipe_type_preference" name="recipe_type_preference"
+          value="{{ prefs.recipe_type_preference}}" placeholder="例：中式、日式" />
+      </div>
+
+      <div class="form-group">
+        <label>3. 避免食材（蛋、香菜）</label>
+        <input type="text" id="avoid_ingredients" name="avoid_ingredients" value="{{ prefs.avoid_ingredients}}"
+          placeholder="例：香菜、花生" />
+      </div>
+
+      <div class="form-group">
+        <label>4. 時間或份量的特殊要求</label>
+        <input type="text" id="cooking_constraints" name="cooking_constraints" value="{{ prefs.cooking_constraints}}"
+          placeholder="例：15 分鐘內" />
+      </div>
+
+      <div class="form-group">
+        <label>5. 特殊飲食限制（素食、無麩質、低醣）</label>
+        <input type="text" id="dietary_restrictions" name="dietary_restrictions" value="{{ prefs.dietary_restrictions}}"
+          placeholder="例：素食" />
+      </div>
+
+      <button type="submit">產生食譜</button>
+    </form>
+
+    <div id="loading" style="display: none">產生中，請稍候…</div>
+
+    <pre id="result"></pre>
+
+    <!-- 回饋按鈕區，預設隱藏 -->
+    <div id="feedback" style="display: none; margin-top: 1rem">
+      <button id="btnLike">👍 喜歡</button>
+      <button id="btnDislike">👎 不喜歡</button>
+    </div>
+  </div>
+
+  <!-- 一定要放在 body 底部 -->
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+
 </html>

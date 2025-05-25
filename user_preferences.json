@@ -15,9 +15,9 @@
     "dietary_restrictions": "無"
   },
   "tuna": {
-    "flavor_preference": "無",
-    "recipe_type_preference": "中式",
-    "avoid_ingredients": "無",
+    "flavor_preference": "中式",
+    "recipe_type_preference": "無",
+    "avoid_ingredients": "香菜",
     "cooking_constraints": "無",
     "dietary_restrictions": "無"
   },
