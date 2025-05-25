@@ -18,7 +18,7 @@ def detect_single_image(image_path):
     clean_label_dir(labels_dir)
     
     # 從環境變量讀取模型路徑
-    model_path = os.getenv("MODEL_PATH", "best.pt")
+    model_path = "best.pt"
     
     # 檢查模型文件是否存在
     if not os.path.exists(model_path):

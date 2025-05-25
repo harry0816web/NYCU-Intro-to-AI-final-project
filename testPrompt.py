@@ -71,6 +71,7 @@ def get_optimized_system_prompt():
 ---
 
 #### 料理名稱：番茄炒蛋洋蔥盅  
+
 #### 料理類型：家常料理（清淡口味）
 
 ---
@@ -136,7 +137,7 @@ def get_optimized_system_prompt():
 4. 時間估算要合理且實用
 
 請以相同邏輯處理使用者的實際輸入並產出食譜。  
-僅限提供食譜，嚴禁離題或暴露模型訊息。"""
+僅限提供食譜，嚴禁離題或暴露模型訊息."""
 
 def build_user_request(ingredients, preferences):
     """構建用戶請求字符串"""
@@ -169,90 +170,175 @@ import re
 from datetime import datetime, timedelta
 
 def extract_cooking_timeline(recipe_text):
-    """從食譜文字中提取烹飪時間軸"""
+    """從食譜文字中提取烹飪時間軸 - 增強版"""
+    if not recipe_text or "料理步驟" not in recipe_text:
+        print("🔍 DEBUG: 食譜中沒有找到料理步驟")
+        return [], 0
+    
     lines = recipe_text.split('\n')
     steps = []
     current_time = 0
     
     # 找到步驟部分
     step_section = False
+    step_counter = 0
+    
     for line in lines:
-        if '料理步驟' in line or '### 料理步驟' in line:
+        line = line.strip()
+        if not line:
+            continue
+            
+        # 檢測步驟開始標記
+        if any(marker in line for marker in ['料理步驟', '### 料理步驟', '## 👩‍🍳 料理步驟']):
             step_section = True
+            print(f"🔍 DEBUG: 找到料理步驟標記: {line}")
             continue
         
-        if step_section and line.strip():
-            # 跳過非步驟行
-            if '烹飪時間軸' in line or '適合份量' in line or line.startswith('###') or line.startswith('---'):
-                break
-                
-            # 解析步驟：匹配格式 "數字. **標題**（⏰ X分鐘）"
-            step_match = re.match(r'(\d+)\.\s*\*\*(.+?)\*\*（⏰\s*(\d+)分鐘）', line)
-            if step_match:
-                step_num = int(step_match.group(1))
-                step_title = step_match.group(2)
-                step_duration = int(step_match.group(3))
+        # 檢測步驟結束標記
+        if step_section and any(marker in line for marker in ['烹飪時間軸', '適合份量', '##', 'finish']):
+            print(f"🔍 DEBUG: 遇到結束標記: {line}")
+            break
+            
+        if step_section and line:
+            # 🔥 多種時間提取模式
+            time_patterns = [
+                # 標準格式：1. **準備食材**（⏰ 5分鐘）
+                r'(\d+)\.\s*\*\*(.+?)\*\*[（(]⏰\s*(\d+)分鐘[）)]',
+                # 變體格式：### 1. **準備食材**（⏰ 5分鐘）
+                r'###?\s*(\d+)\.\s*\*\*(.+?)\*\*[（(]⏰\s*(\d+)分鐘[）)]',
+                # 簡化格式：1. 準備食材（5分鐘）
+                r'(\d+)\.\s*(.+?)[（(](\d+)分鐘[）)]',
+                # 備用格式：1. **準備食材** - 5分鐘
+                r'(\d+)\.\s*\*\*(.+?)\*\*.*?(\d+)\s*分鐘',
+                # 更寬鬆格式：任何包含數字分鐘的行
+                r'(\d+)\.\s*(.+?).*?(\d+)\s*分',
+            ]
+            
+            step_match = None
+            duration = 0
+            step_title = ""
+            step_num = 0
+            
+            for pattern in time_patterns:
+                step_match = re.search(pattern, line)
+                if step_match:
+                    try:
+                        step_num = int(step_match.group(1))
+                        step_title = step_match.group(2).strip()
+                        duration = int(step_match.group(3))
+                        print(f"🔍 DEBUG: 成功匹配步驟 {step_num}: {step_title} ({duration}分鐘)")
+                        break
+                    except (ValueError, IndexError) as e:
+                        print(f"🔍 DEBUG: 模式匹配錯誤: {e}")
+                        continue
+            
+            # 🔥 如果所有模式都失敗，嘗試基礎提取
+            if not step_match:
+                # 檢查是否至少包含步驟編號
+                basic_pattern = r'(\d+)\.\s*(.+)'
+                basic_match = re.search(basic_pattern, line)
+                if basic_match:
+                    step_num = int(basic_match.group(1))
+                    step_title = basic_match.group(2).strip()
+                    # 移除可能的markdown格式
+                    step_title = re.sub(r'\*\*(.+?)\*\*', r'\1', step_title)
+                    step_title = step_title.split('（')[0].split('(')[0].strip()
+                    
+                    # 設定預設時間
+                    if any(keyword in step_title.lower() for keyword in ['準備', '切', '洗']):
+                        duration = 5
+                    elif any(keyword in step_title.lower() for keyword in ['炒', '煮', '烹飪']):
+                        duration = 10
+                    elif any(keyword in step_title.lower() for keyword in ['燉', '烤', '蒸']):
+                        duration = 15
+                    else:
+                        duration = 8  # 預設時間
+                    
+                    print(f"🔍 DEBUG: 基礎匹配步驟 {step_num}: {step_title} (預設{duration}分鐘)")
+            
+            if step_num > 0 and step_title and duration > 0:
+                # 清理標題
+                step_title = re.sub(r'[⏰🔥💡⚠️]+', '', step_title).strip()
+                step_title = re.sub(r'\s+', ' ', step_title)
                 
                 steps.append({
                     "step_number": step_num,
                     "title": step_title,
                     "start_time": current_time,
-                    "duration": step_duration,
-                    "end_time": current_time + step_duration
+                    "duration": duration,
+                    "end_time": current_time + duration
                 })
                 
-                current_time += step_duration
+                current_time += duration
+                step_counter += 1
+    
+    print(f"🔍 DEBUG: 總共解析到 {len(steps)} 個步驟，總時間 {current_time} 分鐘")
+    
+    # 🔥 如果沒有解析到任何步驟，嘗試生成預設步驟
+    if not steps:
+        print("🔍 DEBUG: 嘗試生成預設步驟")
+        default_steps = [
+            {"step_number": 1, "title": "準備食材", "start_time": 0, "duration": 5, "end_time": 5},
+            {"step_number": 2, "title": "開始烹飪", "start_time": 5, "duration": 15, "end_time": 20},
+            {"step_number": 3, "title": "完成料理", "start_time": 20, "duration": 5, "end_time": 25}
+        ]
+        return default_steps, 25
     
     return steps, current_time
 
+def format_timeline_checklist(steps, total_time):
+    """格式化為互動式 Markdown 檢查清單 - 修復格式問題"""
+    if not steps:
+        return "\n⚠️ 無法生成檢查清單：未找到步驟時間信息\n"
+        
+    # 🔥 使用更穩定的 Markdown 格式
+    checklist = f"# 📋 烹飪檢查清單\n\n**總預估時間: {total_time} 分鐘**\n\n"
+    
+    for i, step in enumerate(steps):
+        start_time = f"{step['start_time']:02d}:00"
+        duration = step['duration']
+        title = step['title']
+        
+        # 🔥 確保格式一致性
+        checklist += f"- [ ] **{start_time}** - {title} ({duration}分鐘)\n"
+        checklist += f"  > 筆記空間：____________________________________________\n\n"
+    
+    checklist += "\n---\n\n"
+    checklist += "### ✅ 完成所有步驟後，享用您的美食！🎉\n"
+    
+    return checklist
+
 def format_timeline_text(steps, total_time):
-    """格式化時間軸為文字輸出"""
+    """格式化時間軸為 Markdown 文字輸出 - 增強版"""
     if not steps:
         return "\n⚠️ 無法生成時間軸：未找到步驟時間信息\n"
     
-    timeline_text = "\n" + "="*60 + "\n"
-    timeline_text += f"🕐 **烹飪時間軸詳細分析** (總計: {total_time} 分鐘)\n"
-    timeline_text += "="*60 + "\n\n"
+    timeline_text = f"# 🕐 烹飪時間軸詳細分析\n\n**總計: {total_time} 分鐘**\n\n"
     
     for step in steps:
         start_min = step['start_time']
         end_min = step['end_time']
         duration = step['duration']
         
-        # 時間標記
-        timeline_text += f"⏰ **{start_min:02d}:{0:02d} - {end_min:02d}:{0:02d}** "
-        timeline_text += f"({duration}分鐘) | **步驟{step['step_number']}: {step['title']}**\n"
+        timeline_text += f"## ⏰ {start_min:02d}:00 - {end_min:02d}:00\n\n"
+        timeline_text += f"**({duration}分鐘) | 步驟{step['step_number']}: {step['title']}**\n\n"
         
         # 添加進度條視覺化
-        bar_length = min(duration, 20)  # 最大20個字符
+        bar_length = min(duration, 20)
         progress_bar = "█" * bar_length + "░" * max(0, 20 - bar_length)
-        timeline_text += f"   [{progress_bar}] {duration}分鐘\n\n"
+        timeline_text += f"```\n[{progress_bar}] {duration}分鐘\n```\n\n"
     
-    # 添加累積時間顯示
-    timeline_text += "\n📊 **累積時間分析**\n"
-    timeline_text += "-" * 30 + "\n"
+    # 添加累積時間分析
+    timeline_text += "## 📊 累積時間分析\n\n"
+    timeline_text += "| 步驟 | 累積時間 |\n"
+    timeline_text += "|------|----------|\n"
+    
     cumulative = 0
     for step in steps:
         cumulative += step['duration']
-        timeline_text += f"完成步驟{step['step_number']}: {cumulative}分鐘\n"
+        timeline_text += f"| 完成步驟{step['step_number']} | {cumulative}分鐘 |\n"
     
     return timeline_text
-
-def format_timeline_checklist(steps, total_time):
-    """格式化為可打印的檢查清單"""
-    if not steps:
-        return "\n⚠️ 無法生成檢查清單：未找到步驟時間信息\n"
-        
-    checklist = "\n" + "📋 **烹飪檢查清單**\n"
-    checklist += "="*50 + "\n"
-    checklist += f"總預估時間: {total_time} 分鐘\n\n"
-    
-    for step in steps:
-        checklist += f"□ **{step['start_time']:02d}:{0:02d}** - {step['title']} ({step['duration']}分鐘)\n"
-        checklist += f"   ____________________________________________\n\n"
-    
-    checklist += "✅ 完成！享用您的美食！\n"
-    return checklist
 
 # ============================================================
 # store to json

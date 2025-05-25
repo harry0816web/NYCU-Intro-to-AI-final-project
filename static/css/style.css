@@ -168,8 +168,7 @@ pre {
 }
 
 .markdown-content li {
-  margin: 8px 0;
-  line-height: 1.5;
+  margin: 10px 0;
 }
 
 .markdown-content blockquote {
@@ -250,6 +249,15 @@ pre {
 
 .recipe-content {
   padding: 30px;
+  margin-bottom: 20px;
+}
+
+.recipe-content pre {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  border-left: 4px solid #28a745;
+  line-height: 1.6;
 }
 
 /* 時間軸樣式（保持之前的樣式）*/
@@ -406,15 +414,129 @@ pre {
   }
 }
 
-/* 食譜內容樣式改進 */
-.recipe-content {
-  margin-bottom: 20px;
+/* 🔥 檢查清單專用樣式 */
+.checklist-content {
+  padding: 20px;
 }
 
-.recipe-content pre {
-  background: #f8f9fa;
-  padding: 20px;
+.checklist-content ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.checklist-content li {
+  margin: 15px 0;
+}
+
+.checklist-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 15px;
+  border: 2px solid #e1e8ed;
   border-radius: 8px;
-  border-left: 4px solid #28a745;
-  line-height: 1.6;
+  background: #f8f9fa;
+  transition: all 0.3s ease;
+}
+
+.checklist-item:hover {
+  border-color: #3498db;
+  box-shadow: 0 2px 8px rgba(52, 152, 219, 0.1);
+}
+
+.checklist-item.completed {
+  background: #d4edda;
+  border-color: #28a745;
+}
+
+.step-checkbox {
+  width: 20px;
+  height: 20px;
+  margin-right: 12px;
+  cursor: pointer;
+  transform: scale(1.2);
+  flex-shrink: 0;
+}
+
+.step-label {
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1.5;
+  user-select: none;
+  flex: 1;
+}
+
+.step-label strong {
+  color: #2c3e50;
+  margin-right: 8px;
+}
+
+.checklist-item.completed .step-label {
+  text-decoration: line-through;
+  color: #6c757d;
+}
+
+/* 進度條樣式 */
+.progress-container {
+  margin: 0 0 20px 0;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #3498db;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 20px;
+  background: #e9ecef;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 10px 0;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #28a745, #20c997);
+  width: 0%;
+  transition: width 0.3s ease;
+  border-radius: 10px;
+}
+
+.progress-text {
+  text-align: center;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+/* 完成訊息樣式 */
+.completion-message {
+  display: none;
+  text-align: center;
+  padding: 20px;
+  background: linear-gradient(135deg, #28a745, #20c997);
+  color: white;
+  border-radius: 10px;
+  margin-top: 20px;
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: all 0.5s ease;
+}
+
+.completion-message.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.completion-content h3 {
+  margin: 0 0 10px 0;
+  font-size: 1.5em;
+}
+
+.completion-content p {
+  margin: 0;
+  font-size: 1.1em;
+}
+
+/* 確保不會有重複的進度條 */
+.timeline-content .progress-container:not(:first-child) {
+  display: none;
 }
