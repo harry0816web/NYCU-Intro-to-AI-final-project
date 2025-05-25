@@ -112,7 +112,9 @@ from testPrompt import (
     init_preference_file,
     load_user_preferences,
     save_user_preferences,
-    store_preference_json
+    store_preference_json,
+    get_optimized_system_prompt,
+    build_user_request
 )
 
 # 初始化
@@ -120,27 +122,34 @@ load_dotenv()
 init_preference_file()
 
 # GenAI Client
-client = genai.Client(api_key=os.getenv("AIzaSyC2PCC4FzSWFO5rDK0M9M45dEj4qabkNAk"))
+client = genai.Client(api_key=os.getenv("GOOGLE-API-KEY"))
 MODEL = "gemini-2.0-flash"
 
 def generate_recipe(user_id, ingredients, prefs):
-    # 這裡簡化示範，只傳必要欄位
-    prompt = (
-        f"請立即生成食譜：使用食材 {ingredients}；"
-        f"口味 {prefs['flavor_preference']}；"
-        f"避免 {prefs['avoid_ingredients']}；"
-        f"料理風格 {prefs['recipe_type_preference']}；"
-        f"烹飪限制 {prefs['cooking_constraints']}；"
-        f"飲食限制 {prefs['dietary_restrictions']}。"
+    """使用統一的 system prompt 生成食譜"""
+    
+    # 使用共享的 system prompt
+    system_prompt = get_optimized_system_prompt()
+    
+    # 使用共享的請求構建函數
+    user_request = build_user_request(ingredients, prefs)
+    
+    # 使用 system instruction
+    system_instruction = [types.Part(text=system_prompt)]
+    
+    generate_config = types.GenerateContentConfig(
+        response_mime_type="text/plain",
+        system_instruction=system_instruction,
     )
+
     response = ""
     for chunk in client.models.generate_content_stream(
         model=MODEL,
         contents=[types.Content(
             role="user",
-            parts=[types.Part(text=prompt)]
+            parts=[types.Part(text=user_request)]
         )],
-        config=types.GenerateContentConfig(response_mime_type="text/plain")
+        config=generate_config
     ):
         response += chunk.text
     return response
@@ -185,12 +194,13 @@ UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')
 
 @app.route("/api/recipe", methods=["POST"])
 def api_recipe():
-    data = request.json or {}
-    user_id = data.get("user_id", "default")
-    # 處理上傳的圖片
+    # 檢查是否有文件上傳
     files = request.files.getlist("ingredients")
-    if not files:
+    if not files or not files[0].filename:
         return jsonify({"error": "請至少上傳一張圖片"}), 400
+    
+    # 從 form data 獲取 user_id（而不是 JSON）
+    user_id = request.form.get("user_id", "default")
     
     # 確保 uploads 資料夾存在
     os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -198,11 +208,15 @@ def api_recipe():
     # 儲存所有上傳圖片的路徑
     saved_paths = []
     for file in files:
-        ext = os.path.splitext(file.filename)[-1]
-        filename = f"{uuid.uuid4().hex}{ext}"
-        file_path = os.path.join(UPLOAD_FOLDER, filename)
-        file.save(file_path)
-        saved_paths.append(file_path)
+        if file.filename:  # 確保文件有名稱
+            ext = os.path.splitext(file.filename)[-1]
+            filename = f"{uuid.uuid4().hex}{ext}"
+            file_path = os.path.join(UPLOAD_FOLDER, filename)
+            file.save(file_path)
+            saved_paths.append(file_path)
+
+    if not saved_paths:
+        return jsonify({"error": "沒有有效的圖片文件"}), 400
 
     try:
         # 🔥 這裡用 saved_paths 處理圖片辨識邏輯
@@ -211,9 +225,11 @@ def api_recipe():
         for img_path in saved_paths:
             result = classify_image(img_path)
             ingredients_list.append(result)
+        
         ingredients = "、".join(ingredients_list)
         prefs = load_user_preferences(user_id)
         recipe = generate_recipe(user_id, ingredients, prefs)
+        
         return jsonify({"recipe": recipe, "ingredients": ingredients_list})
     finally:
         # 確保食譜生成後刪除所有圖片
