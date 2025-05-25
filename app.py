@@ -182,6 +182,37 @@ def api_preferences():
         return jsonify(prefs)
 
 UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')
+@app.route("/api/upload_images", methods=["POST"])
+def api_upload_images():
+    files = request.files.getlist("ingredients")
+    if not files:
+        return jsonify({"error": "請至少上傳一張圖片"}), 400
+
+    # 確保 uploads 資料夾存在
+    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+    # 清空舊檔（可選）
+    for f in os.listdir(UPLOAD_FOLDER):
+        if f.endswith((".jpg","jpeg","png",".txt")):
+            os.remove(os.path.join(UPLOAD_FOLDER, f))
+
+    # 存圖片
+    saved_paths = []
+    for file in files:
+        filename = f"{uuid.uuid4().hex}{os.path.splitext(file.filename)[1]}"
+        path = os.path.join(UPLOAD_FOLDER, filename)
+        file.save(path)
+        saved_paths.append(path)
+
+    # 呼叫模型生成 txt（假設 testPrompt.store_txt 已經做完）
+    from testPrompt import run_model_and_dump_txt  # 你自己的函式
+    txt_path = run_model_and_dump_txt(saved_paths)    # 回傳 txt 檔路徑
+
+    # 讀回食材清單
+    with open(txt_path, 'r', encoding='utf-8') as f:
+        ingredients = [line.strip() for line in f if line.strip()]
+
+    return jsonify({"ingredients": ingredients})
 
 @app.route("/api/recipe", methods=["POST"])
 def api_recipe():
