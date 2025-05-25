@@ -1,6 +1,10 @@
 from ultralytics import YOLO
 import os
 import shutil
+from dotenv import load_dotenv
+
+# 載入環境變量
+load_dotenv()
 
 def clean_label_dir(label_dir):
     if os.path.exists(label_dir):
@@ -12,8 +16,22 @@ def detect_single_image(image_path):
     # 載入訓練好的模型
     labels_dir = "runs/detect/explabels"
     clean_label_dir(labels_dir)
-
-    model = YOLO("C:/Users/tuna9/Desktop/nycu/大二下/AI/NYCU-Intro-to-AI-final-project/best.pt")
+    
+    # 從環境變量讀取模型路徑
+    model_path = os.getenv("MODEL_PATH", "best.pt")
+    
+    # 檢查模型文件是否存在
+    if not os.path.exists(model_path):
+        print(f"[ERROR] 模型文件不存在: {model_path}")
+        # 嘗試使用相對路徑
+        fallback_path = "best.pt"
+        if os.path.exists(fallback_path):
+            model_path = fallback_path
+            print(f"[INFO] 使用備用路徑: {model_path}")
+        else:
+            raise FileNotFoundError(f"找不到模型文件: {model_path} 或 {fallback_path}")
+    
+    model = YOLO(model_path)
     
     # 執行圖片檢測，並覆蓋輸出資料夾
     results = model.predict(
