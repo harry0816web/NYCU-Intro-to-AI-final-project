@@ -428,6 +428,97 @@
       "avoid_ingredients": "香菜",
       "cooking_constraints": "無",
       "dietary_restrictions": "無"
+    },
+    {
+      "timestamp": "2025-05-25T14:51:54.362657",
+      "input": [
+        "雞蛋",
+        "馬鈴薯"
+      ],
+      "recipe_ingredients": [
+        "馬鈴薯",
+        "雞蛋",
+        "鮮奶油",
+        "奶油",
+        "鹽",
+        "黑胡椒"
+      ],
+      "recipe_quantity": [
+        "2 顆",
+        "4 顆",
+        "50 毫升",
+        "10 克",
+        "少許",
+        "少許"
+      ],
+      "user_id": "test",
+      "flavor_preference": "無",
+      "recipe_type_preference": "法式",
+      "avoid_ingredients": "無",
+      "cooking_constraints": "無",
+      "dietary_restrictions": "無"
+    },
+    {
+      "timestamp": "2025-05-25T14:53:16.608590",
+      "input": [
+        "馬鈴薯"
+      ],
+      "recipe_ingredients": [
+        "馬鈴薯",
+        "鮮奶油",
+        "牛奶",
+        "大蒜",
+        "奶油",
+        "起司絲",
+        "鹽",
+        "黑胡椒",
+        "巴西里"
+      ],
+      "recipe_quantity": [
+        "3 顆",
+        "200 毫升",
+        "100 毫升",
+        "2 瓣",
+        "20 克",
+        "50 克",
+        "少許",
+        "少許",
+        "少許"
+      ],
+      "user_id": "test",
+      "flavor_preference": "無",
+      "recipe_type_preference": "法式",
+      "avoid_ingredients": "無",
+      "cooking_constraints": "無",
+      "dietary_restrictions": "無"
+    },
+    {
+      "timestamp": "2025-05-25T14:57:44.892336",
+      "input": [
+        "馬鈴薯"
+      ],
+      "recipe_ingredients": [
+        "馬鈴薯",
+        "奶油",
+        "大蒜",
+        "迷迭香",
+        "鹽",
+        "黑胡椒"
+      ],
+      "recipe_quantity": [
+        "2 顆",
+        "2 大匙",
+        "2 瓣",
+        "少許",
+        "少許",
+        "少許"
+      ],
+      "user_id": "test",
+      "flavor_preference": "無",
+      "recipe_type_preference": "法式",
+      "avoid_ingredients": "雞蛋",
+      "cooking_constraints": "無",
+      "dietary_restrictions": "無"
     }
   ]
 }

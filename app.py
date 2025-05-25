@@ -243,20 +243,36 @@ def api_recipe():
     data = request.json or {}
     user_id = data.get("user_id", "default")
     ingredients = data.get("ingredients", "")
-    prefs = load_user_preferences(user_id)
-    recipe = generate_recipe(user_id, ingredients, prefs)
-
-    # 生成完就清空 uploads 及 detect output
+    
+    # 🔥 從請求中獲取用戶當前的偏好設置
+    current_prefs = {
+        "user_id": user_id,
+        "flavor_preference": data.get("flavor_preference", "無"),
+        "recipe_type_preference": data.get("recipe_type_preference", "無"),
+        "avoid_ingredients": data.get("avoid_ingredients", "無"),
+        "cooking_constraints": data.get("cooking_constraints", "無"),
+        "dietary_restrictions": data.get("dietary_restrictions", "無")
+    }
+    
+    # 🔥 先保存用戶偏好到 user_preferences.json
+    save_user_preferences(current_prefs, user_id)
+    
+    # 生成食譜
+    recipe = generate_recipe(user_id, ingredients, current_prefs)
+    
+    # 清空檔案
     for folder in (UPLOAD_FOLDER, os.path.join("runs", "detect")):
-        for f in os.listdir(folder):
-            path = os.path.join(folder, f)
-            try:
-                if os.path.isdir(path):
-                    shutil.rmtree(path)
-                else:
-                    os.remove(path)
-            except:
-                pass
+        if os.path.exists(folder):
+            for f in os.listdir(folder):
+                path = os.path.join(folder, f)
+                try:
+                    if os.path.isdir(path):
+                        shutil.rmtree(path)
+                    else:
+                        os.remove(path)
+                except:
+                    pass
+    
     return jsonify({"recipe": recipe})
 
 @app.route("/api/store_recipe", methods=["POST"])

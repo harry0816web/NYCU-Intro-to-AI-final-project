@@ -5,7 +5,7 @@ import os
 import csv
 import json
 import re
-from datetime import datetime
+from datetime import datetime, timedelta
 from google import genai
 from google.genai import types
 
@@ -153,8 +153,10 @@ def build_user_request(ingredients, preferences):
     return user_request
 
 # ============================================================
-# prompt engineering
+# cooking timeline
 # ============================================================
+
+
 
 # 轉移成函數，只有在檔案存在時才執行
 def init_preference_file():

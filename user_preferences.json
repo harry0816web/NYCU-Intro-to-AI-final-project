@@ -22,9 +22,10 @@
     "dietary_restrictions": "無"
   },
   "test": {
+    "user_id": "test",
     "flavor_preference": "無",
     "recipe_type_preference": "法式",
-    "avoid_ingredients": "無",
+    "avoid_ingredients": "雞蛋",
     "cooking_constraints": "無",
     "dietary_restrictions": "無"
   },
