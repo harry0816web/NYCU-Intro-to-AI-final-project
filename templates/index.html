@@ -99,7 +99,28 @@
           />
         </div>
 
-        <button type="button" id="submitRecipeBtn">產生食譜</button>
+        <!-- 🔥 新增：食譜生成類型選擇按鈕 -->
+        <div class="recipe-type-selection">
+          <h3>🍳 選擇食譜生成方式</h3>
+          <div class="recipe-type-buttons">
+            <button type="button" id="createInnovativeBtn" class="recipe-type-btn innovative">
+              <span class="btn-icon">🚀</span>
+              <span class="btn-title">創新料理</span>
+              <span class="btn-desc">探索全新料理風格</span>
+            </button>
+            <button type="button" id="pastRecommendationBtn" class="recipe-type-btn recommended">
+              <span class="btn-icon">❤️</span>
+              <span class="btn-title">過往推薦</span>
+              <span class="btn-desc">基於您的喜好歷史</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 🔥 原有的產生食譜按鈕改為隱藏狀態指示器 -->
+        <div id="selectedMode" class="selected-mode" style="display: none;">
+          <p>已選擇：<span id="selectedModeText"></span></p>
+          <button type="button" id="submitRecipeBtn">產生食譜</button>
+        </div>
       </form>
 
       <div id="loading" style="display: none">產生中，請稍候…</div>

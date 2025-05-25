@@ -334,68 +334,110 @@ pre {
 
 /* 視覺時間軸樣式 */
 .visual-timeline {
-  max-width: 100%;
-}
-
-.visual-timeline h4 {
-  margin-top: 0;
-  color: #2c3e50;
-  border-bottom: 2px solid #3498db;
-  padding-bottom: 10px;
-}
-
-.timeline-step-visual {
-  margin: 15px 0;
-  padding: 15px;
+  padding: 20px;
   background: #f8f9fa;
-  border-radius: 8px;
-  border-left: 4px solid #3498db;
+  border-radius: 10px;
+  margin: 10px 0;
 }
 
-.step-info {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
-  flex-wrap: wrap;
+.timeline-header-info {
+  text-align: center;
+  margin-bottom: 20px;
 }
 
-.step-time {
-  font-weight: bold;
+.timeline-header-info h4 {
+  margin: 0 0 10px 0;
   color: #2c3e50;
-  font-size: 0.9em;
+  font-size: 1.3em;
 }
 
-.step-title {
+.timeline-header-info p {
+  margin: 0;
   color: #34495e;
-  font-weight: 500;
+  font-size: 1.1em;
+}
+
+.timeline-progress {
+  display: flex;
+  gap: 5px;
+  background: #ecf0f1;
+  padding: 15px;
+  border-radius: 8px;
+  border: 2px solid #bdc3c7;
+  overflow-x: auto;
+}
+
+.timeline-step {
+  min-width: 120px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.timeline-step:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .step-bar {
+  height: 100%;
+  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+  color: white;
+  padding: 15px 10px;
   position: relative;
-  background: #ecf0f1;
-  height: 25px;
-  border-radius: 12px;
-  overflow: hidden;
+  min-height: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
-.step-progress {
-  height: 100%;
-  background: linear-gradient(90deg, #3498db, #2980b9);
-  transition: width 0.8s ease;
-  min-width: 20px; /* 確保即使很短的時間也能看到 */
+.step-bar.first {
+  background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+}
+
+.step-bar.last {
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+}
+
+.step-info {
+  text-align: center;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+}
+
+.step-number {
+  font-size: 0.8em;
+  opacity: 0.9;
+  font-weight: bold;
+}
+
+.step-title {
+  font-size: 1em;
+  font-weight: bold;
+  line-height: 1.2;
+  word-wrap: break-word;
 }
 
 .step-duration {
-  position: absolute;
-  right: 8px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 12px;
-  color: #2c3e50;
-  font-weight: bold;
-  background: rgba(255, 255, 255, 0.8);
-  padding: 2px 6px;
-  border-radius: 10px;
+  font-size: 0.9em;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 2px 8px;
+  border-radius: 12px;
+  margin-top: 5px;
+}
+
+.step-time-range {
+  font-size: 0.75em;
+  text-align: center;
+  opacity: 0.8;
+  background: rgba(0, 0, 0, 0.1);
+  padding: 5px;
+  margin: 5px -10px -15px -10px;
 }
 
 /* 響應式設計 */
@@ -411,6 +453,15 @@ pre {
 
   .timeline-content {
     padding: 15px;
+  }
+
+  .recipe-type-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .recipe-type-btn {
+    max-width: 100%;
   }
 }
 
@@ -539,4 +590,178 @@ pre {
 /* 確保不會有重複的進度條 */
 .timeline-content .progress-container:not(:first-child) {
   display: none;
+}
+
+/* 🔥 新增：食譜類型選擇樣式 */
+.recipe-type-selection {
+  margin: 30px 0;
+  padding: 25px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  border-radius: 15px;
+  border: 2px solid #e8eaf6;
+}
+
+.recipe-type-selection h3 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #2c3e50;
+  font-size: 1.3em;
+}
+
+.recipe-type-buttons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.recipe-type-btn {
+  flex: 1;
+  min-width: 200px;
+  max-width: 280px;
+  padding: 20px;
+  border: 3px solid transparent;
+  border-radius: 15px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+  /* 🔥 未選擇時文字為黑色 */
+  color: #2c3e50;
+}
+
+.recipe-type-btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  transition: left 0.5s;
+}
+
+.recipe-type-btn:hover::before {
+  left: 100%;
+}
+
+.recipe-type-btn.innovative {
+  border-color: #3498db;
+}
+
+.recipe-type-btn.recommended {
+  border-color: #e74c3c;
+}
+
+.recipe-type-btn:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  /* 🔥 hover 時保持黑色文字 */
+  color: #2c3e50;
+}
+
+.recipe-type-btn.innovative:hover {
+  border-color: #2980b9;
+  background: linear-gradient(135deg, #ebf8ff 0%, #dbeafe 100%);
+}
+
+.recipe-type-btn.recommended:hover {
+  border-color: #c0392b;
+  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+}
+
+.recipe-type-btn.selected {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  /* 🔥 選中時文字為白色 */
+  color: white;
+}
+
+.recipe-type-btn.innovative.selected {
+  border-color: #2980b9;
+  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+  color: white;
+}
+
+.recipe-type-btn.recommended.selected {
+  border-color: #c0392b;
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+  color: white;
+}
+
+.btn-icon {
+  display: block;
+  font-size: 2.5em;
+  margin-bottom: 10px;
+  /* 🔥 繼承父元素的顏色 */
+  color: inherit;
+}
+
+.btn-title {
+  display: block;
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-bottom: 5px;
+  /* 🔥 繼承父元素的顏色 */
+  color: inherit;
+}
+
+.btn-desc {
+  display: block;
+  font-size: 0.9em;
+  opacity: 0.8;
+  /* 🔥 繼承父元素的顏色 */
+  color: inherit;
+}
+
+.recipe-type-btn.selected .btn-desc {
+  opacity: 0.9;
+}
+
+/* 🔥 確保所有文字元素都繼承按鈕的顏色 */
+.recipe-type-btn .btn-icon,
+.recipe-type-btn .btn-title,
+.recipe-type-btn .btn-desc {
+  color: inherit !important;
+}
+
+/* 選中模式顯示 */
+.selected-mode {
+  text-align: center;
+  margin: 20px 0;
+  padding: 15px;
+  background: #e8f5e8;
+  border-radius: 10px;
+  border-left: 5px solid #27ae60;
+}
+
+.selected-mode p {
+  margin: 0 0 15px 0;
+  font-weight: bold;
+  color: #27ae60;
+}
+
+#submitRecipeBtn {
+  background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 8px;
+  font-size: 1.1em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+#submitRecipeBtn:hover {
+  background: linear-gradient(135deg, #229954 0%, #27ae60 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }

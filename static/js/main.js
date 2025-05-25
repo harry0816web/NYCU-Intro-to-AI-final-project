@@ -1,5 +1,7 @@
 let lastRecipe = null;
 let lastPayload = null;
+// 🔥 新增：記錄選擇的食譜生成模式
+let selectedRecipeMode = null;
 
 document.addEventListener("DOMContentLoaded", () => {
   // 讀取初次 /api/ingredients
@@ -27,6 +29,42 @@ document.addEventListener("DOMContentLoaded", () => {
   const loading = document.getElementById("loading");
   const result = document.getElementById("result");
   const feedback = document.getElementById("feedback");
+
+  // 🔥 新增：食譜類型選擇按鈕邏輯
+  const innovativeBtn = document.getElementById("createInnovativeBtn");
+  const recommendedBtn = document.getElementById("pastRecommendationBtn");
+  const selectedMode = document.getElementById("selectedMode");
+  const selectedModeText = document.getElementById("selectedModeText");
+
+  // 創新料理按鈕點擊
+  innovativeBtn.addEventListener("click", () => {
+    selectedRecipeMode = "innovative";
+
+    // 更新按鈕狀態
+    innovativeBtn.classList.add("selected");
+    recommendedBtn.classList.remove("selected");
+
+    // 顯示選中模式
+    selectedModeText.textContent = "🚀 創新料理 - 探索全新料理風格";
+    selectedMode.style.display = "block";
+
+    console.log("選擇模式：創新料理");
+  });
+
+  // 過往推薦按鈕點擊
+  recommendedBtn.addEventListener("click", () => {
+    selectedRecipeMode = "recommended";
+
+    // 更新按鈕狀態
+    recommendedBtn.classList.add("selected");
+    innovativeBtn.classList.remove("selected");
+
+    // 顯示選中模式
+    selectedModeText.textContent = "❤️ 過往推薦 - 基於您的喜好歷史";
+    selectedMode.style.display = "block";
+
+    console.log("選擇模式：過往推薦");
+  });
 
   // 圖片上傳 → 模型辨識
   document
@@ -62,10 +100,16 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-  // 最終產生食譜 → JSON 送到 /api/recipe
+  // 🔥 修改：最終產生食譜 → JSON 送到 /api/recipe
   document
     .getElementById("submitRecipeBtn")
     .addEventListener("click", async () => {
+      // 🔥 檢查是否已選擇食譜模式
+      if (!selectedRecipeMode) {
+        alert("請先選擇食譜生成方式（創新料理或過往推薦）");
+        return;
+      }
+
       const userId = document
         .querySelector(".user-panel span")
         .textContent.replace("歡迎, ", "")
@@ -85,6 +129,8 @@ document.addEventListener("DOMContentLoaded", () => {
         cooking_constraints: timeIpt.value.trim() || "無",
         dietary_restrictions: dietIpt.value.trim() || "無",
         include_timeline: true,
+        // 🔥 新增：食譜生成模式
+        recipe_mode: selectedRecipeMode,
       };
 
       console.log("發送的偏好數據:", payload);
@@ -115,12 +161,73 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
+  // 🔥 新增：生成視覺時間軸函數（放在 displayRecipeWithTimeline 函數之前）
+  function generateVisualTimeline(steps, totalTime) {
+    if (!steps || steps.length === 0) {
+      return "<p>⚠️ 無可用的時間軸數據</p>";
+    }
+
+    let visualHTML = `
+      <div class="visual-timeline">
+        <div class="timeline-header-info">
+          <h4>📊 視覺化烹飪流程</h4>
+          <p><strong>總時間：${totalTime} 分鐘</strong></p>
+        </div>
+        <div class="timeline-progress">
+    `;
+
+    steps.forEach((step, index) => {
+      const isFirst = index === 0;
+      const isLast = index === steps.length - 1;
+      const widthPercentage =
+        totalTime > 0 ? (step.duration / totalTime) * 100 : 10;
+
+      visualHTML += `
+        <div class="timeline-step" style="flex: ${
+          step.duration
+        }; min-width: ${Math.max(widthPercentage, 10)}%;">
+          <div class="step-bar ${isFirst ? "first" : ""} ${
+        isLast ? "last" : ""
+      }">
+            <div class="step-info">
+              <div class="step-number">步驟 ${step.step_number}</div>
+              <div class="step-title">${step.title}</div>
+              <div class="step-duration">${step.duration}分鐘</div>
+            </div>
+            <div class="step-time-range">
+              ${step.start_time
+                .toString()
+                .padStart(2, "0")}:00 - ${step.end_time
+        .toString()
+        .padStart(2, "0")}:00
+            </div>
+          </div>
+        </div>
+      `;
+    });
+
+    visualHTML += `
+        </div>
+      </div>
+    `;
+
+    return visualHTML;
+  }
+
   // 🔥 修改：顯示食譜和時間軸的函數
   function displayRecipeWithTimeline(data) {
     const resultDiv = document.getElementById("result");
 
     // 清空之前的內容
     resultDiv.innerHTML = "";
+
+    // 🔥 顯示食譜模式資訊
+    const modeInfo = document.createElement("div");
+    modeInfo.className = "recipe-mode-info";
+    const modeText =
+      selectedRecipeMode === "innovative" ? "🚀 創新料理" : "❤️ 過往推薦";
+    modeInfo.innerHTML = `<p class="mode-indicator">生成模式：${modeText}</p>`;
+    resultDiv.appendChild(modeInfo);
 
     // 顯示主食譜 - 使用 Markdown 渲染
     const recipeDiv = document.createElement("div");
@@ -138,6 +245,21 @@ document.addEventListener("DOMContentLoaded", () => {
     if (data.has_timeline && data.timeline) {
       const timelineContainer = document.createElement("div");
       timelineContainer.className = "timeline-container";
+
+      // 🔥 確保 steps_data 和 total_time 存在
+      let visualTimelineHTML = "<p>⚠️ 視覺時間軸數據不完整</p>";
+      if (data.steps_data && data.total_time) {
+        try {
+          visualTimelineHTML = generateVisualTimeline(
+            data.steps_data,
+            data.total_time
+          );
+        } catch (error) {
+          console.error("生成視覺時間軸時發生錯誤:", error);
+          visualTimelineHTML = `<p>⚠️ 視覺時間軸生成失敗: ${error.message}</p>`;
+        }
+      }
+
       timelineContainer.innerHTML = `
         <div class="timeline-header">
           <h3>🕐 烹飪時間軸</h3>
@@ -161,7 +283,7 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
         
         <div id="timeline-visual" class="timeline-content" style="display:none;">
-          ${generateVisualTimeline(data.steps_data, data.total_time)}
+          ${visualTimelineHTML}
         </div>
       `;
 
@@ -171,40 +293,17 @@ document.addEventListener("DOMContentLoaded", () => {
     } else if (data.timeline_error) {
       const errorDiv = document.createElement("div");
       errorDiv.className = "timeline-error";
-      errorDiv.innerHTML = `<p>⚠️ 時間軸生成失敗: ${data.timeline_error}</p>`;
+      errorDiv.innerHTML = `
+        <p>⚠️ 時間軸生成失敗: ${data.timeline_error}</p>
+        <details>
+          <summary>查看詳細資訊</summary>
+          <pre>${JSON.stringify(data, null, 2)}</pre>
+        </details>
+      `;
       resultDiv.appendChild(errorDiv);
     }
 
     resultDiv.style.display = "block";
-  }
-
-  // 🔥 修改：生成視覺時間軸
-  function generateVisualTimeline(steps, totalTime) {
-    if (!steps || steps.length === 0) {
-      return "<p>⚠️ 無時間軸數據</p>";
-    }
-
-    let html = `<div class="visual-timeline">
-                  <h4>📊 視覺化時間軸 (總計: ${totalTime} 分鐘)</h4>`;
-
-    steps.forEach((step, index) => {
-      const percentage = Math.max((step.duration / totalTime) * 100, 5); // 最小5%
-      html += `
-        <div class="timeline-step-visual">
-          <div class="step-info">
-            <span class="step-time">${step.start_time}:00 - ${step.end_time}:00</span>
-            <span class="step-title">步驟${step.step_number}: ${step.title}</span>
-          </div>
-          <div class="step-bar">
-            <div class="step-progress" style="width: ${percentage}%"></div>
-            <span class="step-duration">${step.duration}分</span>
-          </div>
-        </div>
-      `;
-    });
-
-    html += "</div>";
-    return html;
   }
 
   // 回饋按鈕
@@ -217,6 +316,8 @@ document.addEventListener("DOMContentLoaded", () => {
         user_id: lastPayload.user_id,
         ingredients: lastPayload.ingredients,
         recipe: lastRecipe,
+        // 🔥 新增：記錄使用的模式
+        recipe_mode: selectedRecipeMode,
       }),
     });
     alert("👍 已記錄到 recipe_history！");
