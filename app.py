@@ -8,6 +8,7 @@ from google.genai import types
 from PIL import Image
 import io
 import uuid
+import shutil
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
 
@@ -190,6 +191,7 @@ def api_preferences():
         prefs = load_user_preferences(user_id)
         return jsonify(prefs)
 
+from detect import detect_single_image  
 UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')
 @app.route("/api/upload_images", methods=["POST"])
 def api_upload_images():
@@ -197,78 +199,65 @@ def api_upload_images():
     if not files:
         return jsonify({"error": "請至少上傳一張圖片"}), 400
 
-    # 確保 uploads 資料夾存在
     os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-
-    # 清空舊檔（可選）
+    # 清空 uploads
     for f in os.listdir(UPLOAD_FOLDER):
-        if f.endswith((".jpg","jpeg","png",".txt")):
+        if f.lower().endswith((".jpg", ".jpeg", ".png", ".txt")):
             os.remove(os.path.join(UPLOAD_FOLDER, f))
 
-    # 存圖片
+    # 存圖
     saved_paths = []
     for file in files:
-        filename = f"{uuid.uuid4().hex}{os.path.splitext(file.filename)[1]}"
-        path = os.path.join(UPLOAD_FOLDER, filename)
-        file.save(path)
-        saved_paths.append(path)
+        ext = os.path.splitext(file.filename)[1]
+        fn = f"{uuid.uuid4().hex}{ext}"
+        p = os.path.join(UPLOAD_FOLDER, fn)
+        file.save(p)
+        saved_paths.append(p)
 
-    # 呼叫模型生成 txt（假設 testPrompt.store_txt 已經做完）
-    from testPrompt import run_model_and_dump_txt  # 你自己的函式
-    txt_path = run_model_and_dump_txt(saved_paths)    # 回傳 txt 檔路徑
+    # 只對第一張圖做偵測
+    detect_single_image(saved_paths[0])
 
-    # 讀回食材清單
+    # 讀模型輸出的 txt
+    label_dir = os.path.join("runs", "detect", "exp", "labels")
+    txt_path  = os.path.join(label_dir, "ingredients.txt")
+    if not os.path.exists(txt_path):
+        return jsonify({"error": "辨識結果檔找不到"}), 500
+
+    with open(txt_path, 'r', encoding='utf-8') as f:
+        ingredients = [l.strip() for l in f if l.strip()]
+
+    return jsonify({"ingredients": ingredients})
+
+@app.route("/api/ingredients", methods=["GET"])
+def api_ingredients():
+    label_dir = os.path.join("runs", "detect", "exp", "labels")
+    txt_path  = os.path.join(label_dir, "ingredients.txt")
+    if not os.path.exists(txt_path):
+        return jsonify({"error":"找不到食材清單"}), 404
     with open(txt_path, 'r', encoding='utf-8') as f:
         ingredients = [line.strip() for line in f if line.strip()]
-
     return jsonify({"ingredients": ingredients})
 
 @app.route("/api/recipe", methods=["POST"])
 def api_recipe():
-    # 檢查是否有文件上傳
-    files = request.files.getlist("ingredients")
-    if not files or not files[0].filename:
-        return jsonify({"error": "請至少上傳一張圖片"}), 400
-    
-    # 從 form data 獲取 user_id（而不是 JSON）
-    user_id = request.form.get("user_id", "default")
-    
-    # 確保 uploads 資料夾存在
-    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-    
-    # 儲存所有上傳圖片的路徑
-    saved_paths = []
-    for file in files:
-        if file.filename:  # 確保文件有名稱
-            ext = os.path.splitext(file.filename)[-1]
-            filename = f"{uuid.uuid4().hex}{ext}"
-            file_path = os.path.join(UPLOAD_FOLDER, filename)
-            file.save(file_path)
-            saved_paths.append(file_path)
+    data = request.json or {}
+    user_id = data.get("user_id", "default")
+    ingredients = data.get("ingredients", "")
+    prefs = load_user_preferences(user_id)
+    recipe = generate_recipe(user_id, ingredients, prefs)
 
-    if not saved_paths:
-        return jsonify({"error": "沒有有效的圖片文件"}), 400
-
-    try:
-        # 🔥 這裡用 saved_paths 處理圖片辨識邏輯
-        # 模擬每張圖片回傳 "食材名稱"
-        ingredients_list = []
-        for img_path in saved_paths:
-            result = classify_image(img_path)
-            ingredients_list.append(result)
-        
-        ingredients = "、".join(ingredients_list)
-        prefs = load_user_preferences(user_id)
-        recipe = generate_recipe(user_id, ingredients, prefs)
-        
-        return jsonify({"recipe": recipe, "ingredients": ingredients_list})
-    finally:
-        # 確保食譜生成後刪除所有圖片
-        for path in saved_paths:
+    # 生成完就清空 uploads 及 detect output
+    for folder in (UPLOAD_FOLDER, os.path.join("runs", "detect")):
+        for f in os.listdir(folder):
+            path = os.path.join(folder, f)
             try:
-                os.remove(path)
-            except Exception as e:
-                print(f"刪除檔案失敗: {path}, {e}")
+                if os.path.isdir(path):
+                    shutil.rmtree(path)
+                else:
+                    os.remove(path)
+            except:
+                pass
+    return jsonify({"recipe": recipe})
 
 @app.route("/api/store_recipe", methods=["POST"])
 def api_store_recipe():

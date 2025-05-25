@@ -394,6 +394,40 @@
       "avoid_ingredients": "香菜",
       "cooking_constraints": "無",
       "dietary_restrictions": "無"
+    },
+    {
+      "timestamp": "2025-05-25T14:11:29.418488",
+      "input": [
+        "蛋"
+      ],
+      "recipe_ingredients": [
+        "雞蛋",
+        "青江菜",
+        "紅蘿蔔",
+        "蒜頭",
+        "醬油",
+        "太白粉",
+        "食用油",
+        "鹽",
+        "白胡椒粉"
+      ],
+      "recipe_quantity": [
+        "3 顆",
+        "2 棵",
+        "1/3 根",
+        "2 瓣",
+        "1 大匙",
+        "1 小匙",
+        "適量",
+        "少許",
+        "少許"
+      ],
+      "user_id": "tuna",
+      "flavor_preference": "中式",
+      "recipe_type_preference": "無",
+      "avoid_ingredients": "香菜",
+      "cooking_constraints": "無",
+      "dietary_restrictions": "無"
     }
   ]
 }

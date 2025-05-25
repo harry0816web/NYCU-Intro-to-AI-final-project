@@ -16,14 +16,13 @@
         <a href="/logout" class="logout-btn">登出</a>
       </div>
       <!-- 使用者名稱／食材等欄位... -->
-      <div class="form-group">
-        <label>請上傳食材圖片（可多選）</label>
-        <input type="file" id="ingredients" name="ingredients" accept="image/*" multiple />
-      </div>
-      <div class="form-group">
+      <form id="uploadForm" enctype="multipart/form-data">
+        <!-- 圖片上傳的 input 和確認辨識按鈕 -->
+        <input type="file" id="ingredients" name="ingredients" multiple accept="image/*"/>
+        <button id="confirmIngredients" type="button">確認圖片並辨識食材</button>
+      </form>
         <label>🔍 模型辨識的食材清單（可修改）</label>
-        <textarea id="ingredientList" rows="5" cols="50" placeholder="尚未生成食材"></textarea>
-        <button id="confirmIngredients" type="button">確認食材並生成食譜</button>
+        <textarea id="ingredientList" rows="5" cols="50"></textarea>
       </div>
 
       <!-- 偏好欄位... -->
@@ -59,7 +58,7 @@
           placeholder="例：素食" />
       </div>
 
-      <button type="submit" id="submitRecipeBtn">產生食譜</button>
+      <button type="button" id="submitRecipeBtn">產生食譜</button>
     </form>
 
     <div id="loading" style="display: none">產生中，請稍候…</div>
