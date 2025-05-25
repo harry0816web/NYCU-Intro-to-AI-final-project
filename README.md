@@ -11,11 +11,11 @@ We used the [Kitchen Computer Vision Project](https://universe.roboflow.com/niza
 ## Main Approach
 ### 1. Ingredient Detection
 
-*Baseline – YOLOv5s Pre-trained Model*
+***Baseline – YOLOv5s Pre-trained Model***
 
 As our starting point, we used the pre-trained YOLOv5s model without any fine-tuning. We tested its performance on 10 real-world photos of ingredients laid out on a table.
 
-*Our Approach – Fine-tuned YOLOv8s Model*
+***Our Approach – Fine-tuned YOLOv8s Model***
 
 We fine-tuned a YOLOv8s pre-trained model using a custom dataset composed of commonly seen food ingredients. The dataset was collected from Roboflow and labeled using the YOLO format.
 
@@ -23,11 +23,20 @@ To enhance generalization, we applied multiple augmentation techniques such as M
 
 ### 2. Recipe Generation
 
-*Baseline – Gemini API without Prompt Engineering*
+***Baseline – Gemini API without Prompt Engineering***
 
-We initially passed detected ingredients directly into Gemini , resulting in unstructured and generic recipe outputs.
+We chose **Gemini 2.0 Flash** as our baseline because:
 
-*Our Approach – Gemini with Prompt Engineering + Function Calling*
+1. **LLMs support creative recipe generation**  
+   Gemini, as a large language model, can produce diverse and innovative meal ideas based on user input.
+
+2. **Free, fast, and stable**  
+   The Gemini API offers reliable performance without cost, making it accessible and efficient for practical applications.
+
+3. **Easy API integration and user-friendly**  
+   The API is straightforward to connect with, and the overall developer experience is smooth and well-documented.
+
+***Our Approach – Gemini with Prompt Engineering + Function Calling***
 
 We applied prompt engineering to guide Gemini in generating structured recipes, and used prompt personalization to tailor responses based on user preferences. Function calling was also integrated to dynamically retrieve user data, making the generation process more consistent, personalized, and extensible.
 
