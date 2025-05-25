@@ -102,3 +102,319 @@ pre {
 .logout-btn:hover {
   background-color: #ddd;
 }
+
+/* 🔥 Markdown 內容樣式 */
+.markdown-content {
+  line-height: 1.6;
+  color: #333;
+}
+
+.markdown-content h1 {
+  color: #2c3e50;
+  border-bottom: 3px solid #3498db;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  font-size: 2em;
+}
+
+.markdown-content h2 {
+  color: #34495e;
+  border-bottom: 2px solid #95a5a6;
+  padding-bottom: 8px;
+  margin-top: 30px;
+  margin-bottom: 15px;
+  font-size: 1.5em;
+}
+
+.markdown-content h3 {
+  color: #2980b9;
+  margin-top: 25px;
+  margin-bottom: 10px;
+  font-size: 1.2em;
+}
+
+.markdown-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.markdown-content table th {
+  background: #3498db;
+  color: white;
+  padding: 12px;
+  text-align: left;
+  font-weight: bold;
+}
+
+.markdown-content table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #ddd;
+}
+
+.markdown-content table tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+.markdown-content table tr:hover {
+  background-color: #e3f2fd;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+  margin: 15px 0;
+  padding-left: 20px;
+}
+
+.markdown-content li {
+  margin: 8px 0;
+  line-height: 1.5;
+}
+
+.markdown-content blockquote {
+  border-left: 4px solid #f39c12;
+  background: #fef9e7;
+  padding: 10px 15px;
+  margin: 15px 0;
+  font-style: italic;
+  border-radius: 0 4px 4px 0;
+}
+
+.markdown-content blockquote strong {
+  color: #e67e22;
+}
+
+.markdown-content strong {
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+.markdown-content em {
+  color: #8e44ad;
+  font-style: italic;
+}
+
+.markdown-content p {
+  margin: 10px 0;
+  line-height: 1.6;
+}
+
+/* 步驟編號美化 */
+.markdown-content h3[id^="heading-"] {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 10px 15px;
+  border-radius: 8px;
+  margin: 20px 0 10px 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* 代碼塊樣式 */
+.markdown-content code {
+  background: #f1f2f6;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: "Courier New", monospace;
+  color: #e74c3c;
+}
+
+.markdown-content pre {
+  background: #2c3e50;
+  color: #ecf0f1;
+  padding: 15px;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin: 15px 0;
+}
+
+/* 如果沒有 marked.js 的回退樣式 */
+.markdown-fallback {
+  background: #f8f9fa;
+  padding: 20px;
+  border-left: 4px solid #3498db;
+  white-space: pre-wrap;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+}
+
+/* 食譜結果容器 */
+.recipe-result {
+  max-width: 900px;
+  margin: 20px auto;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.recipe-content {
+  padding: 30px;
+}
+
+/* 時間軸樣式（保持之前的樣式）*/
+.timeline-container {
+  margin-top: 30px;
+  border: 2px solid #3498db;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #f8f9fa;
+}
+
+.timeline-header {
+  background: #3498db;
+  color: white;
+  padding: 15px;
+}
+
+.timeline-header h3 {
+  margin: 0 0 10px 0;
+  font-size: 1.2em;
+}
+
+.timeline-tabs {
+  display: flex;
+  gap: 5px;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.3s;
+  font-size: 0.9em;
+}
+
+.tab-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.tab-btn.active {
+  background: rgba(255, 255, 255, 0.3);
+  font-weight: bold;
+}
+
+.timeline-content {
+  padding: 20px;
+  background: white;
+  margin: 0;
+}
+
+.timeline-content pre {
+  white-space: pre-wrap;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  margin: 0;
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 5px;
+  border-left: 4px solid #3498db;
+}
+
+.timeline-error {
+  margin-top: 20px;
+  padding: 15px;
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 5px;
+  color: #856404;
+}
+
+/* 視覺時間軸樣式 */
+.visual-timeline {
+  max-width: 100%;
+}
+
+.visual-timeline h4 {
+  margin-top: 0;
+  color: #2c3e50;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 10px;
+}
+
+.timeline-step-visual {
+  margin: 15px 0;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #3498db;
+}
+
+.step-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.step-time {
+  font-weight: bold;
+  color: #2c3e50;
+  font-size: 0.9em;
+}
+
+.step-title {
+  color: #34495e;
+  font-weight: 500;
+}
+
+.step-bar {
+  position: relative;
+  background: #ecf0f1;
+  height: 25px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.step-progress {
+  height: 100%;
+  background: linear-gradient(90deg, #3498db, #2980b9);
+  transition: width 0.8s ease;
+  min-width: 20px; /* 確保即使很短的時間也能看到 */
+}
+
+.step-duration {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+  color: #2c3e50;
+  font-weight: bold;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 2px 6px;
+  border-radius: 10px;
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+  .timeline-tabs {
+    flex-direction: column;
+  }
+
+  .step-info {
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .timeline-content {
+    padding: 15px;
+  }
+}
+
+/* 食譜內容樣式改進 */
+.recipe-content {
+  margin-bottom: 20px;
+}
+
+.recipe-content pre {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  border-left: 4px solid #28a745;
+  line-height: 1.6;
+}
