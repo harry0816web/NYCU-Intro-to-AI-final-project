@@ -11,15 +11,24 @@ We used the [Kitchen Computer Vision Project](https://universe.roboflow.com/niza
 ## Main Approach
 ### 1. Ingredient Detection
 
-***Baseline – YOLOv5s Pre-trained Model***
+***Baseline – YOLOv8s Pre-trained Model***
 
-As our starting point, we used the pre-trained YOLOv5s model without any fine-tuning. We tested its performance on 10 real-world photos of ingredients laid out on a table.
+We chose **YOLOv8s** as our baseline because:
+
+1. **Project scale and hardware constraints**
+   As a lightweight model, YOLOv8s is suitable for small to medium-scale projects and can be trained efficiently on limited hardware.
+
+2. **Practicality and community support**
+   YOLOv8 is widely used in real-world applications and backed by strong community resources, documentation, and pre-trained weights.
+
+3. **Transfer learning to accelerate training**
+   Ultralytics provides a pre-trained YOLOv8s model on the COCO dataset, allowing us to leverage learned object features and avoid training a model from    scratch.
 
 ***Our Approach – Fine-tuned YOLOv8s Model***
 
 We fine-tuned a YOLOv8s pre-trained model using a custom dataset composed of commonly seen food ingredients. The dataset was collected from Roboflow and labeled using the YOLO format.
 
-To enhance generalization, we applied multiple augmentation techniques such as Mosaic, MixUp, Copy-Paste, rotation, and scaling. 
+To enhance generalization and overlap problem, we applied multiple augmentation techniques such as Mosaic, MixUp, Copy-Paste, rotation, and scaling. 
 
 ### 2. Recipe Generation
 
