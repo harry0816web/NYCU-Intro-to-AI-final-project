@@ -1,0 +1,42 @@
+{
+  "recipe_history": [
+    {
+      "timestamp": "2025-05-30T16:48:38.021822",
+      "input": [
+        "魚",
+        "玉米",
+        "辣椒"
+      ],
+      "recipe_ingredients": [
+        "魚肉",
+        "玉米粒",
+        "紅辣椒",
+        "蒜",
+        "醬油",
+        "米酒",
+        "太白粉",
+        "食用油",
+        "鹽",
+        "白胡椒粉"
+      ],
+      "recipe_quantity": [
+        "200 克",
+        "1 碗",
+        "1 根",
+        "2 瓣",
+        "1 湯匙",
+        "1 湯匙",
+        "1 茶匙",
+        "適量",
+        "少許",
+        "少許"
+      ],
+      "user_id": "q",
+      "flavor_preference": "無",
+      "recipe_type_preference": "無",
+      "avoid_ingredients": "無",
+      "cooking_constraints": "無",
+      "dietary_restrictions": "無"
+    }
+  ]
+}

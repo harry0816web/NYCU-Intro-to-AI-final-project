@@ -1,10 +1,8 @@
 let lastRecipe = null;
 let lastPayload = null;
-// 🔥 新增：記錄選擇的食譜生成模式
 let selectedRecipeMode = null;
 
 document.addEventListener("DOMContentLoaded", () => {
-  // 讀取初次 /api/ingredients
   async function loadIngredients() {
     try {
       const resp = await fetch("/api/ingredients");
@@ -19,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   loadIngredients();
 
-  // 各偏好欄位
+  // 使用者偏好
   const flavorIpt = document.getElementById("flavor_preference");
   const typeIpt = document.getElementById("recipe_type_preference");
   const avoidIpt = document.getElementById("avoid_ingredients");
@@ -30,43 +28,32 @@ document.addEventListener("DOMContentLoaded", () => {
   const result = document.getElementById("result");
   const feedback = document.getElementById("feedback");
 
-  // 🔥 新增：食譜類型選擇按鈕邏輯
   const innovativeBtn = document.getElementById("createInnovativeBtn");
   const recommendedBtn = document.getElementById("pastRecommendationBtn");
   const selectedMode = document.getElementById("selectedMode");
   const selectedModeText = document.getElementById("selectedModeText");
 
-  // 創新料理按鈕點擊
+  // 創新料理按鈕
   innovativeBtn.addEventListener("click", () => {
     selectedRecipeMode = "innovative";
-
-    // 更新按鈕狀態
     innovativeBtn.classList.add("selected");
     recommendedBtn.classList.remove("selected");
-
-    // 顯示選中模式
-    selectedModeText.textContent = "🚀 創新料理 - 探索全新料理風格";
+    selectedModeText.textContent = "創新料理 - 探索全新料理風格";
     selectedMode.style.display = "block";
-
     console.log("選擇模式：創新料理");
   });
 
-  // 過往推薦按鈕點擊
+  // 過往推薦按鈕
   recommendedBtn.addEventListener("click", () => {
     selectedRecipeMode = "recommended";
-
-    // 更新按鈕狀態
     recommendedBtn.classList.add("selected");
     innovativeBtn.classList.remove("selected");
-
-    // 顯示選中模式
-    selectedModeText.textContent = "❤️ 過往推薦 - 基於您的喜好歷史";
+    selectedModeText.textContent = "過往推薦 - 基於您的喜好歷史";
     selectedMode.style.display = "block";
-
     console.log("選擇模式：過往推薦");
   });
 
-  // 圖片上傳 → 模型辨識
+  // 上傳圖片並傳入model
   document
     .getElementById("confirmIngredients")
     .addEventListener("click", async (e) => {
@@ -76,10 +63,8 @@ document.addEventListener("DOMContentLoaded", () => {
         alert("請至少上傳一張食材圖片");
         return;
       }
-
       const formData = new FormData();
       for (const f of files) formData.append("ingredients", f);
-
       loading.style.display = "";
       try {
         const resp = await fetch("/api/upload_images", {
@@ -100,11 +85,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-  // 🔥 修改：最終產生食譜 → JSON 送到 /api/recipe
   document
     .getElementById("submitRecipeBtn")
     .addEventListener("click", async () => {
-      // 🔥 檢查是否已選擇食譜模式
+      // 檢查是否已選擇食譜模式
       if (!selectedRecipeMode) {
         alert("請先選擇食譜生成方式（創新料理或過往推薦）");
         return;
@@ -129,12 +113,10 @@ document.addEventListener("DOMContentLoaded", () => {
         cooking_constraints: timeIpt.value.trim() || "無",
         dietary_restrictions: dietIpt.value.trim() || "無",
         include_timeline: true,
-        // 🔥 新增：食譜生成模式
         recipe_mode: selectedRecipeMode,
       };
 
       console.log("發送的偏好數據:", payload);
-
       loading.style.display = "";
       try {
         const resp = await fetch("/api/recipe", {
@@ -146,8 +128,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (resp.ok) {
           lastRecipe = data.recipe;
           lastPayload = payload;
-
-          // 🔥 顯示食譜和時間軸
           displayRecipeWithTimeline(data);
 
           feedback.style.display = "";
@@ -161,16 +141,15 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-  // 🔥 新增：生成視覺時間軸函數（放在 displayRecipeWithTimeline 函數之前）
   function generateVisualTimeline(steps, totalTime) {
     if (!steps || steps.length === 0) {
-      return "<p>⚠️ 無可用的時間軸數據</p>";
+      return "<p>無可用的時間軸數據</p>";
     }
 
     let visualHTML = `
       <div class="visual-timeline">
         <div class="timeline-header-info">
-          <h4>📊 視覺化烹飪流程</h4>
+          <h4>視覺化烹飪流程</h4>
           <p><strong>總時間：${totalTime} 分鐘</strong></p>
         </div>
         <div class="timeline-progress">
@@ -214,22 +193,17 @@ document.addEventListener("DOMContentLoaded", () => {
     return visualHTML;
   }
 
-  // 🔥 修改：顯示食譜和時間軸的函數
   function displayRecipeWithTimeline(data) {
     const resultDiv = document.getElementById("result");
-
-    // 清空之前的內容
     resultDiv.innerHTML = "";
 
-    // 🔥 顯示食譜模式資訊
     const modeInfo = document.createElement("div");
     modeInfo.className = "recipe-mode-info";
     const modeText =
-      selectedRecipeMode === "innovative" ? "🚀 創新料理" : "❤️ 過往推薦";
+      selectedRecipeMode === "innovative" ? "創新料理" : "過往推薦";
     modeInfo.innerHTML = `<p class="mode-indicator">生成模式：${modeText}</p>`;
     resultDiv.appendChild(modeInfo);
 
-    // 顯示主食譜 - 使用 Markdown 渲染
     const recipeDiv = document.createElement("div");
     recipeDiv.className = "recipe-content markdown-content";
 
@@ -241,13 +215,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     resultDiv.appendChild(recipeDiv);
 
-    // 如果有時間軸，顯示時間軸區域
     if (data.has_timeline && data.timeline) {
       const timelineContainer = document.createElement("div");
       timelineContainer.className = "timeline-container";
 
-      // 🔥 確保 steps_data 和 total_time 存在
-      let visualTimelineHTML = "<p>⚠️ 視覺時間軸數據不完整</p>";
+      let visualTimelineHTML = "<p>視覺時間軸數據不完整</p>";
       if (data.steps_data && data.total_time) {
         try {
           visualTimelineHTML = generateVisualTimeline(
@@ -256,13 +228,13 @@ document.addEventListener("DOMContentLoaded", () => {
           );
         } catch (error) {
           console.error("生成視覺時間軸時發生錯誤:", error);
-          visualTimelineHTML = `<p>⚠️ 視覺時間軸生成失敗: ${error.message}</p>`;
+          visualTimelineHTML = `<p>視覺時間軸生成失敗: ${error.message}</p>`;
         }
       }
 
       timelineContainer.innerHTML = `
         <div class="timeline-header">
-          <h3>🕐 烹飪時間軸</h3>
+          <h3>烹飪時間軸</h3>
           <div class="timeline-tabs">
             <button class="tab-btn active" onclick="showTimelineTab('text')">文字時間軸</button>
             <button class="tab-btn" onclick="showTimelineTab('checklist')">互動檢查清單</button>
@@ -289,12 +261,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
       resultDiv.appendChild(timelineContainer);
 
-      // 🔥 不要在這裡初始化，讓 showTimelineTab 來處理
     } else if (data.timeline_error) {
       const errorDiv = document.createElement("div");
       errorDiv.className = "timeline-error";
       errorDiv.innerHTML = `
-        <p>⚠️ 時間軸生成失敗: ${data.timeline_error}</p>
+        <p>時間軸生成失敗: ${data.timeline_error}</p>
         <details>
           <summary>查看詳細資訊</summary>
           <pre>${JSON.stringify(data, null, 2)}</pre>
@@ -316,11 +287,10 @@ document.addEventListener("DOMContentLoaded", () => {
         user_id: lastPayload.user_id,
         ingredients: lastPayload.ingredients,
         recipe: lastRecipe,
-        // 🔥 新增：記錄使用的模式
         recipe_mode: selectedRecipeMode,
       }),
     });
-    alert("👍 已記錄到 recipe_history！");
+    alert("已記錄到 recipe_history！");
     feedback.style.display = "none";
   });
 
@@ -329,30 +299,24 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-// 🔥 修改：切換時間軸顯示 - 避免重複處理
+
 function showTimelineTab(tabName) {
   try {
-    // 隱藏所有時間軸內容
     document.querySelectorAll(".timeline-content").forEach((el) => {
       el.style.display = "none";
     });
 
-    // 移除所有按鈕的 active 類別
     document.querySelectorAll(".tab-btn").forEach((btn) => {
       btn.classList.remove("active");
     });
 
-    // 顯示選中的內容
     const targetContent = document.getElementById(`timeline-${tabName}`);
     if (targetContent) {
       targetContent.style.display = "block";
 
-      // 如果是檢查清單標籤，處理初始化
       if (tabName === "checklist") {
         const checklistContainer =
           document.getElementById("timeline-checklist");
-
-        // 🔥 每次都重新檢查是否需要初始化
         if (checklistContainer && !checklistContainer.dataset.initialized) {
           setTimeout(() => {
             try {
@@ -363,14 +327,13 @@ function showTimelineTab(tabName) {
               console.error("初始化檢查清單時發生錯誤:", error);
               checklistContainer.innerHTML = `
                 <div class="timeline-error">
-                  <p>⚠️ 無法初始化互動檢查清單</p>
+                  <p>無法初始化互動檢查清單</p>
                   <p>錯誤: ${error.message}</p>
                 </div>
               `;
             }
           }, 100);
         } else if (checklistContainer) {
-          // 已初始化，只更新進度
           setTimeout(() => {
             updateProgress();
           }, 50);
@@ -378,25 +341,21 @@ function showTimelineTab(tabName) {
       }
     }
 
-    // 為當前按鈕添加 active 類別
     event.target.classList.add("active");
   } catch (error) {
     console.error("切換時間軸標籤時發生錯誤:", error);
   }
 }
 
-// 🔥 修改：處理檢查清單 Markdown - 更強健的格式處理
 function processChecklistMarkdown() {
   const checklistContainer = document.getElementById("timeline-checklist");
   if (!checklistContainer) return;
 
-  // 檢查是否已經處理過
   if (checklistContainer.dataset.markdownProcessed === "true") {
     console.log("Markdown 已處理過，跳過重複處理");
     return;
   }
 
-  // 獲取原始內容
   let checklistContent =
     checklistContainer.innerHTML || checklistContainer.textContent;
 
@@ -408,20 +367,17 @@ function processChecklistMarkdown() {
   }
 
   try {
-    // 🔥 先用 marked 渲染 Markdown
     if (typeof marked !== "undefined" && checklistContent.includes("- [ ]")) {
       const renderedHtml = marked.parse(checklistContent);
       checklistContainer.innerHTML = renderedHtml;
     }
 
-    // 🔥 找到所有的任務列表項目並轉換為互動式
     const listItems = checklistContainer.querySelectorAll("li");
     let convertedCount = 0;
 
     listItems.forEach((item, index) => {
       const text = item.textContent.trim();
 
-      // 🔥 多重格式檢測模式
       const patterns = [
         // 標準格式：**12:00** - 準備食材 (5分鐘)
         /\*\*(\d{2}:\d{2})\*\*\s*-\s*(.+?)\s*\((\d+)分鐘\)/,
@@ -452,30 +408,27 @@ function processChecklistMarkdown() {
           </div>
         `;
 
-        // 添加事件監聽器
         const checkbox = item.querySelector(".step-checkbox");
         if (checkbox) {
           checkbox.addEventListener("change", handleCheckboxChange);
         }
 
         convertedCount++;
-        console.log(`✅ 成功轉換步驟 ${index + 1}: ${time} - ${title}`);
+        console.log(`成功轉換步驟 ${index + 1}: ${time} - ${title}`);
       } else {
-        console.log(`⚠️ 無法匹配步驟格式: ${text}`);
+        console.log(`無法匹配步驟格式: ${text}`);
       }
     });
 
-    console.log(`🎯 總共轉換了 ${convertedCount} 個檢查清單項目`);
+    console.log(`總共轉換了 ${convertedCount} 個檢查清單項目`);
 
-    // 標記為已處理
     checklistContainer.dataset.markdownProcessed = "true";
   } catch (error) {
     console.error("處理檢查清單 Markdown 時發生錯誤:", error);
 
-    // 🔥 錯誤處理：如果處理失敗，顯示錯誤訊息
     checklistContainer.innerHTML = `
       <div class="timeline-error">
-        <p>⚠️ 檢查清單格式處理失敗</p>
+        <p>檢查清單格式處理失敗</p>
         <p>原始內容:</p>
         <pre>${checklistContent}</pre>
       </div>
@@ -483,19 +436,15 @@ function processChecklistMarkdown() {
   }
 }
 
-// 🔥 修改：初始化互動式檢查清單 - 增加驗證
 function initializeInteractiveChecklist() {
   try {
     const checkboxes = document.querySelectorAll(".step-checkbox");
 
     if (checkboxes.length === 0) {
-      console.log("⚠️ 沒有找到可互動的檢查清單項目");
+      console.log("沒有找到可互動的檢查清單項目");
       return;
     }
-
-    console.log(`🎯 找到 ${checkboxes.length} 個檢查清單項目`);
-
-    // 添加進度條
+    console.log(`找到 ${checkboxes.length} 個檢查清單項目`);
     const existingProgress = document.querySelector(
       "#timeline-checklist .progress-container"
     );
@@ -503,30 +452,25 @@ function initializeInteractiveChecklist() {
       addProgressBar();
     }
 
-    // 確保所有 checkbox 都有事件監聽器
     checkboxes.forEach((checkbox, index) => {
       if (!checkbox.dataset.initialized) {
         checkbox.addEventListener("change", handleCheckboxChange);
         checkbox.dataset.initialized = "true";
-        console.log(`✅ 初始化檢查項目 ${index + 1}`);
+        console.log(`初始化檢查項目 ${index + 1}`);
       }
     });
 
-    // 初始化進度顯示
     updateProgress();
   } catch (error) {
     console.error("初始化互動檢查清單時發生錯誤:", error);
   }
 }
 
-// 🔥 修改：顯示食譜和時間軸 - 重置狀態
 function displayRecipeWithTimeline(data) {
   const resultDiv = document.getElementById("result");
 
-  // 清空之前的內容
   resultDiv.innerHTML = "";
 
-  // 顯示主食譜
   const recipeDiv = document.createElement("div");
   recipeDiv.className = "recipe-content markdown-content";
 
@@ -538,13 +482,12 @@ function displayRecipeWithTimeline(data) {
 
   resultDiv.appendChild(recipeDiv);
 
-  // 如果有時間軸，顯示時間軸區域
   if (data.has_timeline && data.timeline) {
     const timelineContainer = document.createElement("div");
     timelineContainer.className = "timeline-container";
     timelineContainer.innerHTML = `
       <div class="timeline-header">
-        <h3>🕐 烹飪時間軸</h3>
+        <h3>烹飪時間軸</h3>
         <div class="timeline-tabs">
           <button class="tab-btn active" onclick="showTimelineTab('text')">文字時間軸</button>
           <button class="tab-btn" onclick="showTimelineTab('checklist')">互動檢查清單</button>
@@ -574,7 +517,7 @@ function displayRecipeWithTimeline(data) {
     const errorDiv = document.createElement("div");
     errorDiv.className = "timeline-error";
     errorDiv.innerHTML = `
-      <p>⚠️ 時間軸生成失敗: ${data.timeline_error}</p>
+      <p>時間軸生成失敗: ${data.timeline_error}</p>
       <details>
         <summary>查看詳細資訊</summary>
         <pre>${JSON.stringify(data, null, 2)}</pre>
@@ -586,12 +529,10 @@ function displayRecipeWithTimeline(data) {
   resultDiv.style.display = "block";
 }
 
-// 🔥 修改：添加進度條 - 更安全的檢查
 function addProgressBar() {
   const checklistContainer = document.querySelector("#timeline-checklist");
   if (!checklistContainer) return;
 
-  // 🔥 更嚴格的檢查，確保不會重複添加
   const existingProgress = checklistContainer.querySelector(
     ".progress-container"
   );
@@ -621,7 +562,6 @@ function addProgressBar() {
   }, 50);
 }
 
-// 🔥 其他函數保持不變...
 function handleCheckboxChange(event) {
   const checkbox = event.target;
   const checklistItem = checkbox.closest(".checklist-item");
@@ -732,7 +672,7 @@ function showCompletionMessage() {
     completionMessage.className = "completion-message";
     completionMessage.innerHTML = `
       <div class="completion-content">
-        <h3>🎉 恭喜完成所有步驟！</h3>
+        <h3>恭喜完成所有步驟！</h3>
         <p>現在可以享用您的美食了！</p>
       </div>
     `;

@@ -1,0 +1,18 @@
+{
+  "tuna": {
+    "user_id": "tuna",
+    "flavor_preference": "無",
+    "recipe_type_preference": "無",
+    "avoid_ingredients": "無",
+    "cooking_constraints": "無",
+    "dietary_restrictions": "無"
+  },
+  "q": {
+    "user_id": "q",
+    "flavor_preference": "無",
+    "recipe_type_preference": "中式",
+    "avoid_ingredients": "無",
+    "cooking_constraints": "無",
+    "dietary_restrictions": "無"
+  }
+}
