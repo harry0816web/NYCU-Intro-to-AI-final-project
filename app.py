@@ -132,30 +132,66 @@ MODEL = "gemini-2.0-flash"
 def generate_recipe(user_id, ingredients, prefs):
     """使用統一的 system prompt 生成食譜"""
     
-    # 使用共享的 system prompt
+    # 🔥 修正: 正確呼叫函數獲取 system prompt，並處理可能的 None 值
     system_prompt = get_optimized_system_prompt()
+    
+    # 🔥 Debug: 檢查 system_prompt 是否為 None
+    if system_prompt is None:
+        print("❌ ERROR: get_optimized_system_prompt() 返回 None")
+        # 使用備用的簡單 system prompt
+        system_prompt = """你是一位專業的食譜推薦助理。請根據用戶提供的食材和需求，生成結構完整的料理建議。
+        
+        請按照以下格式輸出：
+        #### 料理名稱：[菜名]
+        #### 料理類型：[類型]
+        ### 食材準備
+        | 食材 | 份量 |
+        |------|------|
+        | [食材1] | [份量1] |
+        
+        ### 料理步驟
+        1. **[步驟名稱]**（⏰ [時間]分鐘）
+           - [詳細說明]
+        
+        請用中文回答，直接輸出食譜內容。"""
     
     # 使用共享的請求構建函數
     user_request = build_user_request(ingredients, prefs)
     
-    # 使用 system instruction
-    system_instruction = [types.Part(text=system_prompt)]
+    # 🔥 Debug: 印出 system_prompt 確認內容
+    print(f"System prompt: {system_prompt[:100] if system_prompt else 'None'}...")
+    print(f"User request: {user_request[:100] if user_request else 'None'}...")
     
-    generate_config = types.GenerateContentConfig(
-        response_mime_type="text/plain",
-        system_instruction=system_instruction,
-    )
-
+    # 使用 system instruction
     response = ""
-    for chunk in client.models.generate_content_stream(
-        model=MODEL,
-        contents=[types.Content(
-            role="user",
-            parts=[types.Part(text=user_request)]
-        )],
-        config=generate_config
-    ):
-        response += chunk.text
+    try:
+        for chunk in client.models.generate_content_stream(
+            model=MODEL,
+            contents=[types.Content(
+                role="user", 
+                parts=[types.Part(text=user_request)]
+            )],
+            config=types.GenerateContentConfig(
+                response_mime_type="text/plain",
+                system_instruction=system_prompt
+            )
+        ):
+            response += chunk.text
+    except Exception as e:
+        print(f"API 錯誤: {e}")
+        # 如果 system_instruction 有問題，嘗試不使用它
+        for chunk in client.models.generate_content_stream(
+            model=MODEL,
+            contents=[types.Content(
+                role="user", 
+                parts=[types.Part(text=f"{system_prompt}\n\n{user_request}")]
+            )],
+            config=types.GenerateContentConfig(
+                response_mime_type="text/plain"
+            )
+        ):
+            response += chunk.text
+    
     return response
 
 @app.route("/")

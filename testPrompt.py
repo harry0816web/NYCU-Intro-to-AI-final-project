@@ -8,6 +8,7 @@ import re
 from datetime import datetime, timedelta
 from google import genai
 from google.genai import types
+from dotenv import load_dotenv
 
 PREF_FILE = "preferences.json"
 USER_PREF_FILE = "user_preferences.json"  # 新增用戶偏好檔案
@@ -18,7 +19,8 @@ USER_PREF_FILE = "user_preferences.json"  # 新增用戶偏好檔案
 
 def get_optimized_system_prompt():
     """返回優化後的系統 prompt"""
-    return """你是一位專業的「食譜推薦助理」，只負責根據使用者提供的食材與需求，產生**結構完整的料理建議**。  
+    return """
+你是一位專業的「食譜推薦助理」，只負責根據使用者提供的食材與需求，產生**結構完整的料理建議**。  
 請嚴格遵守以下規則：
 
 0. 用中文回答
@@ -39,7 +41,8 @@ def get_optimized_system_prompt():
      - **每個步驟的預估時間**（必須明確標註分鐘數）
      - 總預估烹飪時間
      - 適合份量（1人、2人或多人）
-   - 依據使用者需求調整口味（如：清淡、重口味）、料理時間限制、飲食限制（如：素食、無麩質、低醣），讓食譜盡量符合使用者提供的食材，不要多出太多其他的食材，並且可以在用家中常見的器具以及調味料簡單料理。
+   - 依據使用者需求調整口味（如：清淡、重口味）、料理時間限制、飲食限制（如：素食、無麩質、低醣），
+    讓食譜盡量符合使用者提供的食材，不要多出太多其他的食材，並且可以在用家中常見的器具以及調味料簡單料理。
 
 3. **安全性要求**
    - 僅建議安全、常見、可食用的食材與料理方式。
@@ -574,8 +577,9 @@ def chat_with_llm():
         save_user_preferences(user_preferences, user_id)
         print("（✅ 用戶偏好已保存）")
 
+    load_dotenv()
     client = genai.Client(
-        api_key='AIzaSyC2PCC4FzSWFO5rDK0M9M45dEj4qabkNAk',
+        api_key= "GOOGLE_API_KEY",
     )
 
     model = "gemini-2.0-flash"
@@ -593,7 +597,7 @@ def chat_with_llm():
             f"使用者過去偏好的主要食材：{', '.join(pi) or '無'}；"
             f"常用於食譜的食材及份量：{', '.join(f'{i}({q})' for i,q in zip(pri,pq))}。\n"
         )
-        # 加入過去生成的食譜名稱列表
+
         rh = prefs.get("recipe_history", [])
         if isinstance(rh, list) and rh:
             names = []
