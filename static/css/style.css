@@ -1,0 +1,767 @@
+body {
+  font-family: sans-serif;
+  padding: 2rem;
+  background: #f4f4f4;
+}
+
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+input::placeholder {
+  color: #aaa;
+}
+
+button {
+  padding: 0.6rem 1.2rem;
+  background: #28a745;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #218838;
+}
+
+pre {
+  white-space: pre-wrap;
+  background: #eee;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-top: 1rem;
+}
+
+#loading {
+  margin-top: 1rem;
+  color: #555;
+}
+
+.auth-form {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.form-footer {
+  margin-top: 15px;
+  text-align: center;
+}
+
+.error {
+  color: red;
+  padding: 10px;
+  margin-bottom: 15px;
+  background-color: #ffeeee;
+  border: 1px solid #ffcccc;
+  border-radius: 3px;
+}
+
+.user-panel {
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+  padding: 10px;
+  background-color: #f0f0f0;
+  margin-bottom: 20px;
+}
+.logout-btn {
+  padding: 2px 8px;
+  background-color: #eee;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  text-decoration: none;
+  color: #333;
+}
+
+.logout-btn:hover {
+  background-color: #ddd;
+}
+
+/* 🔥 Markdown 內容樣式 */
+.markdown-content {
+  line-height: 1.6;
+  color: #333;
+}
+
+.markdown-content h1 {
+  color: #2c3e50;
+  border-bottom: 3px solid #3498db;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  font-size: 2em;
+}
+
+.markdown-content h2 {
+  color: #34495e;
+  border-bottom: 2px solid #95a5a6;
+  padding-bottom: 8px;
+  margin-top: 30px;
+  margin-bottom: 15px;
+  font-size: 1.5em;
+}
+
+.markdown-content h3 {
+  color: #2980b9;
+  margin-top: 25px;
+  margin-bottom: 10px;
+  font-size: 1.2em;
+}
+
+.markdown-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.markdown-content table th {
+  background: #3498db;
+  color: white;
+  padding: 12px;
+  text-align: left;
+  font-weight: bold;
+}
+
+.markdown-content table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #ddd;
+}
+
+.markdown-content table tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+.markdown-content table tr:hover {
+  background-color: #e3f2fd;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+  margin: 15px 0;
+  padding-left: 20px;
+}
+
+.markdown-content li {
+  margin: 10px 0;
+}
+
+.markdown-content blockquote {
+  border-left: 4px solid #f39c12;
+  background: #fef9e7;
+  padding: 10px 15px;
+  margin: 15px 0;
+  font-style: italic;
+  border-radius: 0 4px 4px 0;
+}
+
+.markdown-content blockquote strong {
+  color: #e67e22;
+}
+
+.markdown-content strong {
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+.markdown-content em {
+  color: #8e44ad;
+  font-style: italic;
+}
+
+.markdown-content p {
+  margin: 10px 0;
+  line-height: 1.6;
+}
+
+/* 步驟編號美化 */
+.markdown-content h3[id^="heading-"] {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 10px 15px;
+  border-radius: 8px;
+  margin: 20px 0 10px 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* 代碼塊樣式 */
+.markdown-content code {
+  background: #f1f2f6;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: "Courier New", monospace;
+  color: #e74c3c;
+}
+
+.markdown-content pre {
+  background: #2c3e50;
+  color: #ecf0f1;
+  padding: 15px;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin: 15px 0;
+}
+
+/* 如果沒有 marked.js 的回退樣式 */
+.markdown-fallback {
+  background: #f8f9fa;
+  padding: 20px;
+  border-left: 4px solid #3498db;
+  white-space: pre-wrap;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+}
+
+/* 食譜結果容器 */
+.recipe-result {
+  max-width: 900px;
+  margin: 20px auto;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.recipe-content {
+  padding: 30px;
+  margin-bottom: 20px;
+}
+
+.recipe-content pre {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  border-left: 4px solid #28a745;
+  line-height: 1.6;
+}
+
+/* 時間軸樣式（保持之前的樣式）*/
+.timeline-container {
+  margin-top: 30px;
+  border: 2px solid #3498db;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #f8f9fa;
+}
+
+.timeline-header {
+  background: #3498db;
+  color: white;
+  padding: 15px;
+}
+
+.timeline-header h3 {
+  margin: 0 0 10px 0;
+  font-size: 1.2em;
+}
+
+.timeline-tabs {
+  display: flex;
+  gap: 5px;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.3s;
+  font-size: 0.9em;
+}
+
+.tab-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.tab-btn.active {
+  background: rgba(255, 255, 255, 0.3);
+  font-weight: bold;
+}
+
+.timeline-content {
+  padding: 20px;
+  background: white;
+  margin: 0;
+}
+
+.timeline-content pre {
+  white-space: pre-wrap;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  margin: 0;
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 5px;
+  border-left: 4px solid #3498db;
+}
+
+.timeline-error {
+  margin-top: 20px;
+  padding: 15px;
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 5px;
+  color: #856404;
+}
+
+/* 視覺時間軸樣式 */
+.visual-timeline {
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 10px;
+  margin: 10px 0;
+}
+
+.timeline-header-info {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.timeline-header-info h4 {
+  margin: 0 0 10px 0;
+  color: #2c3e50;
+  font-size: 1.3em;
+}
+
+.timeline-header-info p {
+  margin: 0;
+  color: #34495e;
+  font-size: 1.1em;
+}
+
+.timeline-progress {
+  display: flex;
+  gap: 5px;
+  background: #ecf0f1;
+  padding: 15px;
+  border-radius: 8px;
+  border: 2px solid #bdc3c7;
+  overflow-x: auto;
+}
+
+.timeline-step {
+  min-width: 120px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.timeline-step:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.step-bar {
+  height: 100%;
+  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+  color: white;
+  padding: 15px 10px;
+  position: relative;
+  min-height: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.step-bar.first {
+  background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+}
+
+.step-bar.last {
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+}
+
+.step-info {
+  text-align: center;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+}
+
+.step-number {
+  font-size: 0.8em;
+  opacity: 0.9;
+  font-weight: bold;
+}
+
+.step-title {
+  font-size: 1em;
+  font-weight: bold;
+  line-height: 1.2;
+  word-wrap: break-word;
+}
+
+.step-duration {
+  font-size: 0.9em;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 2px 8px;
+  border-radius: 12px;
+  margin-top: 5px;
+}
+
+.step-time-range {
+  font-size: 0.75em;
+  text-align: center;
+  opacity: 0.8;
+  background: rgba(0, 0, 0, 0.1);
+  padding: 5px;
+  margin: 5px -10px -15px -10px;
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+  .timeline-tabs {
+    flex-direction: column;
+  }
+
+  .step-info {
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .timeline-content {
+    padding: 15px;
+  }
+
+  .recipe-type-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .recipe-type-btn {
+    max-width: 100%;
+  }
+}
+
+/* 🔥 檢查清單專用樣式 */
+.checklist-content {
+  padding: 20px;
+}
+
+.checklist-content ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.checklist-content li {
+  margin: 15px 0;
+}
+
+.checklist-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 15px;
+  border: 2px solid #e1e8ed;
+  border-radius: 8px;
+  background: #f8f9fa;
+  transition: all 0.3s ease;
+}
+
+.checklist-item:hover {
+  border-color: #3498db;
+  box-shadow: 0 2px 8px rgba(52, 152, 219, 0.1);
+}
+
+.checklist-item.completed {
+  background: #d4edda;
+  border-color: #28a745;
+}
+
+.step-checkbox {
+  width: 20px;
+  height: 20px;
+  margin-right: 12px;
+  cursor: pointer;
+  transform: scale(1.2);
+  flex-shrink: 0;
+}
+
+.step-label {
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1.5;
+  user-select: none;
+  flex: 1;
+}
+
+.step-label strong {
+  color: #2c3e50;
+  margin-right: 8px;
+}
+
+.checklist-item.completed .step-label {
+  text-decoration: line-through;
+  color: #6c757d;
+}
+
+/* 進度條樣式 */
+.progress-container {
+  margin: 0 0 20px 0;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #3498db;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 20px;
+  background: #e9ecef;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 10px 0;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #28a745, #20c997);
+  width: 0%;
+  transition: width 0.3s ease;
+  border-radius: 10px;
+}
+
+.progress-text {
+  text-align: center;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+/* 完成訊息樣式 */
+.completion-message {
+  display: none;
+  text-align: center;
+  padding: 20px;
+  background: linear-gradient(135deg, #28a745, #20c997);
+  color: white;
+  border-radius: 10px;
+  margin-top: 20px;
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: all 0.5s ease;
+}
+
+.completion-message.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.completion-content h3 {
+  margin: 0 0 10px 0;
+  font-size: 1.5em;
+}
+
+.completion-content p {
+  margin: 0;
+  font-size: 1.1em;
+}
+
+/* 確保不會有重複的進度條 */
+.timeline-content .progress-container:not(:first-child) {
+  display: none;
+}
+
+/* 🔥 新增：食譜類型選擇樣式 */
+.recipe-type-selection {
+  margin: 30px 0;
+  padding: 25px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  border-radius: 15px;
+  border: 2px solid #e8eaf6;
+}
+
+.recipe-type-selection h3 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #2c3e50;
+  font-size: 1.3em;
+}
+
+.recipe-type-buttons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.recipe-type-btn {
+  flex: 1;
+  min-width: 200px;
+  max-width: 280px;
+  padding: 20px;
+  border: 3px solid transparent;
+  border-radius: 15px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+  /* 🔥 未選擇時文字為黑色 */
+  color: #2c3e50;
+}
+
+.recipe-type-btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  transition: left 0.5s;
+}
+
+.recipe-type-btn:hover::before {
+  left: 100%;
+}
+
+.recipe-type-btn.innovative {
+  border-color: #3498db;
+}
+
+.recipe-type-btn.recommended {
+  border-color: #e74c3c;
+}
+
+.recipe-type-btn:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  /* 🔥 hover 時保持黑色文字 */
+  color: #2c3e50;
+}
+
+.recipe-type-btn.innovative:hover {
+  border-color: #2980b9;
+  background: linear-gradient(135deg, #ebf8ff 0%, #dbeafe 100%);
+}
+
+.recipe-type-btn.recommended:hover {
+  border-color: #c0392b;
+  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+}
+
+.recipe-type-btn.selected {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  /* 🔥 選中時文字為白色 */
+  color: white;
+}
+
+.recipe-type-btn.innovative.selected {
+  border-color: #2980b9;
+  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+  color: white;
+}
+
+.recipe-type-btn.recommended.selected {
+  border-color: #c0392b;
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+  color: white;
+}
+
+.btn-icon {
+  display: block;
+  font-size: 2.5em;
+  margin-bottom: 10px;
+  /* 🔥 繼承父元素的顏色 */
+  color: inherit;
+}
+
+.btn-title {
+  display: block;
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-bottom: 5px;
+  /* 🔥 繼承父元素的顏色 */
+  color: inherit;
+}
+
+.btn-desc {
+  display: block;
+  font-size: 0.9em;
+  opacity: 0.8;
+  /* 🔥 繼承父元素的顏色 */
+  color: inherit;
+}
+
+.recipe-type-btn.selected .btn-desc {
+  opacity: 0.9;
+}
+
+/* 🔥 確保所有文字元素都繼承按鈕的顏色 */
+.recipe-type-btn .btn-icon,
+.recipe-type-btn .btn-title,
+.recipe-type-btn .btn-desc {
+  color: inherit !important;
+}
+
+/* 選中模式顯示 */
+.selected-mode {
+  text-align: center;
+  margin: 20px 0;
+  padding: 15px;
+  background: #e8f5e8;
+  border-radius: 10px;
+  border-left: 5px solid #27ae60;
+}
+
+.selected-mode p {
+  margin: 0 0 15px 0;
+  font-weight: bold;
+  color: #27ae60;
+}
+
+#submitRecipeBtn {
+  background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 8px;
+  font-size: 1.1em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+#submitRecipeBtn:hover {
+  background: linear-gradient(135deg, #229954 0%, #27ae60 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
