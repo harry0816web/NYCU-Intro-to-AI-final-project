@@ -1,0 +1,186 @@
+{
+  "recipe_history": [
+    {
+      "timestamp": "2025-05-17T15:38:28.993652",
+      "input": [
+        "洋蔥 雞蛋"
+      ],
+      "recipe_ingredients": [
+        "洋蔥",
+        "雞蛋",
+        "食用油",
+        "醬油",
+        "砂糖",
+        "白胡椒粉"
+      ],
+      "recipe_quantity": [
+        "半顆",
+        "3 顆",
+        "適量",
+        "1 小匙",
+        "0.5 小匙",
+        "少許"
+      ],
+      "flavor_preference": "無",
+      "recipe_type_preference": "無",
+      "avoid_ingredients": "無",
+      "cooking_constraints": "無",
+      "dietary_restrictions": "無",
+      "user_id": "default"
+    },
+    {
+      "timestamp": "2025-05-17T15:52:30.638418",
+      "input": [
+        "蝦子"
+      ],
+      "recipe_ingredients": [
+        "蝦仁",
+        "酪梨",
+        "牛番茄",
+        "洋蔥",
+        "檸檬",
+        "香菜",
+        "玉米脆片",
+        "蒜頭",
+        "橄欖油",
+        "鹽",
+        "黑胡椒"
+      ],
+      "recipe_quantity": [
+        "300 克",
+        "2 顆",
+        "1 顆",
+        "1/4 顆",
+        "1 顆",
+        "1 小把",
+        "適量",
+        "1 瓣",
+        "1 大匙",
+        "少許",
+        "少許"
+      ],
+      "user_id": "default",
+      "flavor_preference": "無",
+      "recipe_type_preference": "無",
+      "avoid_ingredients": "無",
+      "cooking_constraints": "無",
+      "dietary_restrictions": "無"
+    },
+    {
+      "timestamp": "2025-05-17T15:53:38.311728",
+      "input": [
+        "蝦子"
+      ],
+      "recipe_ingredients": [
+        "蝦仁",
+        "義大利麵",
+        "蒜頭",
+        "鮮奶油",
+        "帕瑪森起司粉",
+        "橄欖油",
+        "鹽",
+        "黑胡椒",
+        "巴西利"
+      ],
+      "recipe_quantity": [
+        "300 克",
+        "200 克",
+        "3-4 瓣",
+        "150 毫升",
+        "2 大匙",
+        "2 大匙",
+        "少許",
+        "少許",
+        "少許"
+      ],
+      "user_id": "default",
+      "flavor_preference": "無",
+      "recipe_type_preference": "無",
+      "avoid_ingredients": "無",
+      "cooking_constraints": "無",
+      "dietary_restrictions": "無"
+    },
+    {
+      "timestamp": "2025-05-17T15:54:39.306436",
+      "input": [
+        "蝦子"
+      ],
+      "recipe_ingredients": [
+        "蝦子",
+        "蒜頭",
+        "薑",
+        "乾辣椒",
+        "花椒",
+        "醬油",
+        "米酒",
+        "糖",
+        "醋",
+        "香油",
+        "食用油",
+        "蔥花"
+      ],
+      "recipe_quantity": [
+        "300 克",
+        "3 瓣",
+        "5 片",
+        "5-8 根",
+        "1 小匙",
+        "2 大匙",
+        "1 大匙",
+        "1 小匙",
+        "1 小匙",
+        "少許",
+        "適量",
+        "適量"
+      ],
+      "user_id": "Apollo",
+      "flavor_preference": "重口味",
+      "recipe_type_preference": "中式",
+      "avoid_ingredients": "無",
+      "cooking_constraints": "無",
+      "dietary_restrictions": "無"
+    },
+    {
+      "timestamp": "2025-05-17T16:11:18.416639",
+      "input": [
+        "蝦子"
+      ],
+      "recipe_ingredients": [
+        "蝦子",
+        "蒜",
+        "薑",
+        "乾辣椒",
+        "花椒",
+        "料酒",
+        "生抽",
+        "老抽",
+        "糖",
+        "醋",
+        "鹽",
+        "食用油",
+        "蔥花"
+      ],
+      "recipe_quantity": [
+        "300克",
+        "3瓣",
+        "1小塊",
+        "5-8根",
+        "1茶匙",
+        "1湯匙",
+        "2湯匙",
+        "1茶匙",
+        "1茶匙",
+        "1茶匙",
+        "少許",
+        "適量",
+        "適量"
+      ],
+      "user_id": "Apollo",
+      "flavor_preference": "重口味",
+      "recipe_type_preference": "中式",
+      "avoid_ingredients": "無",
+      "cooking_constraints": "無",
+      "dietary_restrictions": "無"
+    }
+  ]
+}
