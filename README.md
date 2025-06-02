@@ -11,18 +11,11 @@ We used the [Kitchen Computer Vision Project](https://universe.roboflow.com/niza
 ## Main Approach
 ### 1. Ingredient Detection
 
-***Baseline – YOLOv8s Pre-trained Model***
+***Baseline – YOLO-World***
 
-We chose **YOLOv8s** as our baseline because:
-
-1. **Project scale and hardware constraints**
-   As a lightweight model, YOLOv8s is suitable for small to medium-scale projects and can be trained efficiently on limited hardware.
-
-2. **Practicality and community support**
-   YOLOv8 is widely used in real-world applications and backed by strong community resources, documentation, and pre-trained weights.
-
-3. **Transfer learning to accelerate training**
-   Ultralytics provides a pre-trained YOLOv8s model on the COCO dataset, allowing us to leverage learned object features and avoid training a model from    scratch.
+We chose **YOLOv8x-world** as our baseline.
+**YOLO-World** is a open-vocabulary object detection model. We evaluate the performance of our model against the YOLOv8x-world model on the same test set. 
+This comparison will quantify the performance gains achieved through our approach.
 
 ***Our Approach – Fine-tuned YOLOv8s Model***
 
